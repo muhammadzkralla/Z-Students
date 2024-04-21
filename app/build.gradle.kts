@@ -68,6 +68,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation("androidx.compose.material3:material3:1.2.0-alpha03")
+    implementation("androidx.compose.material:material:1.4.3")
 
     // Lifecycle + ViewModel & LiveData
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
@@ -99,6 +101,9 @@ dependencies {
 
     // OnBoarding
     implementation("com.google.accompanist:accompanist-pager:0.12.0")
+
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.7.1")
 }
 kapt {
     correctErrorTypes = true

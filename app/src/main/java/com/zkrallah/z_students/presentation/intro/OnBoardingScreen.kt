@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,15 +40,17 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.domain.models.OnBoarding
+import com.zkrallah.z_students.presentation.main.MainViewModel
 import com.zkrallah.z_students.ui.theme.Grey300
 import com.zkrallah.z_students.ui.theme.Grey900
 import com.zkrallah.z_students.ui.theme.RedLight
+import kotlin.reflect.KFunction0
 
 const val TAG = "OnBoardingScreen"
 
 @ExperimentalPagerApi
 @Composable
-fun OnBoarding() {
+fun OnBoarding(setOnBoardingDone: () -> Unit) {
     val items = ArrayList<OnBoarding>()
 
     items.add(
@@ -81,8 +84,9 @@ fun OnBoarding() {
         item = items,
         pagerState = pagerState,
         modifier = Modifier
-            .fillMaxWidth()
-            .background(color = Color.White)
+            .fillMaxSize()
+            .background(color = Color.White),
+        setOnBoardingDone
     )
 }
 
@@ -92,6 +96,7 @@ fun OnBoardingPager(
     item: List<OnBoarding>,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
+    setOnBoardingDone: () -> Unit
 ) {
     Box(modifier = modifier) {
         Column(
@@ -124,7 +129,7 @@ fun OnBoardingPager(
             PagerIndicator(item.size, pagerState.currentPage)
         }
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-            BottomSection(pagerState.currentPage)
+            BottomSection(pagerState.currentPage, setOnBoardingDone)
         }
     }
 }
@@ -191,7 +196,7 @@ fun Indicator(isSelected: Boolean) {
 }
 
 @Composable
-fun BottomSection(currentPager: Int) {
+fun BottomSection(currentPager: Int, setOnBoardingDone: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(bottom = 20.dp)
@@ -200,7 +205,7 @@ fun BottomSection(currentPager: Int) {
     ) {
         if (currentPager == 2) {
             OutlinedButton(
-                onClick = { log("Getting Started") },
+                onClick = { setOnBoardingDone() },
                 shape = RoundedCornerShape(50),
             ) {
                 Text(
@@ -211,8 +216,9 @@ fun BottomSection(currentPager: Int) {
                 )
             }
         } else {
-            SkipNextButton(text = "Skip", modifier = Modifier.padding(start = 20.dp)) { log("Skip") }
-            SkipNextButton(text = "Next", modifier = Modifier.padding(end = 20.dp)) { log("Next") }
+            SkipNextButton(text = "Skip", modifier = Modifier.padding(start = 20.dp)
+            ) { setOnBoardingDone() }
+            SkipNextButton(text = "Next", modifier = Modifier.padding(end = 20.dp)) {  }
         }
     }
 }
