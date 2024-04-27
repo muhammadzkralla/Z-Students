@@ -1,5 +1,6 @@
 package com.zkrallah.z_students.presentation.main
 
+import LoginScreen
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,50 +35,78 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.zkrallah.z_students.domain.models.BottomNavItem
+import com.zkrallah.z_students.presentation.intro.OnBoarding
 import com.zkrallah.z_students.ui.theme.ZStudentsTheme
+import kotlinx.coroutines.runBlocking
 
+val screens = listOf(
+    BottomNavItem(
+        "Home",
+        "home",
+        icon = Icons.Default.Home
+    ),
+    BottomNavItem(
+        "Chat",
+        "chat",
+        icon = Icons.Default.Email
+    ),
+    BottomNavItem(
+        "Settings",
+        "settings",
+        icon = Icons.Default.Settings
+    )
+)
+
+val routes = listOf(
+    "Home",
+    "Settings",
+    "Chat"
+)
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun MainScreen(mainViewModel: MainViewModel) {
+    runBlocking {
+        mainViewModel.getStartingDestination()
+    }
+
+    val startingDestination = mainViewModel.startingDestination.collectAsState()
+
+    startingDestination.value?.let {
+        SetupNavigation(startingScreen = it)
+    } ?: OnBoarding(mainViewModel::setOnBoardingStatus)
+}
 
 @Composable
-fun SetupNavigation() {
+fun SetupNavigation(startingScreen: String) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
         val navController = rememberNavController()
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
         Scaffold(
             bottomBar = {
-                BottomNavigationBar(items = listOf(
-                    BottomNavItem(
-                        "Home",
-                        "home",
-                        icon = Icons.Default.Home
-                    ),
-                    BottomNavItem(
-                        "Chat",
-                        "chat",
-                        icon = Icons.Default.Email
-                    ),
-                    BottomNavItem(
-                        "Settings",
-                        "settings",
-                        icon = Icons.Default.Settings
+                if (routes.contains(navBackStackEntry?.destination?.route)) {
+                    BottomNavigationBar(items = screens,
+                        navController = navController,
+                        onItemClick = {
+                            navController.navigate(it.route)
+                        }
                     )
-                ),
-                    navController = navController,
-                    onItemClick = {
-                        navController.navigate(it.route)
-                    }
-                )
+                }
             }
         ) {
-            Navigation(navController = navController, modifier = Modifier.padding(it))
+            Navigation(startingScreen, navController = navController, modifier = Modifier.padding(it))
         }
     }
 }
+
 @Composable
-fun Navigation(navController: NavHostController, modifier: Modifier) {
-    NavHost(navController = navController, startDestination = "Home") {
+fun Navigation(startingScreen: String, navController: NavHostController, modifier: Modifier) {
+    NavHost(navController = navController, startDestination = startingScreen) {
         composable(route = "Home") {
             HomeScreen()
         }
@@ -84,6 +115,11 @@ fun Navigation(navController: NavHostController, modifier: Modifier) {
         }
         composable(route = "Settings") {
             SettingsScreen()
+        }
+        composable(route = "Login") {
+            LoginScreen(
+                navController = navController
+            )
         }
     }
 }
@@ -207,7 +243,7 @@ fun DefaultPreview() {
                     )
                 }
             ) {
-                Navigation(navController = navController, modifier = Modifier.padding(it))
+                Navigation("Home", navController = navController, modifier = Modifier.padding(it))
             }
         }
     }
