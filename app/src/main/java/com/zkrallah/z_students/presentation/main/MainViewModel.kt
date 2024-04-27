@@ -15,8 +15,8 @@ class MainViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
-    private val _startingDestination: MutableStateFlow<String?> = MutableStateFlow(null)
-    val startingDestination: StateFlow<String?> = _startingDestination
+    private val _startingDestination: MutableStateFlow<String> = MutableStateFlow("OnBoarding")
+    val startingDestination: StateFlow<String> = _startingDestination
 
     suspend fun getStartingDestination() {
         val isOnboardingDone = mainRepository.getOnBoardingDone()

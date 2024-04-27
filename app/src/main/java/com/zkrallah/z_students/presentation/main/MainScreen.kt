@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -38,7 +37,6 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.zkrallah.z_students.domain.models.BottomNavItem
 import com.zkrallah.z_students.presentation.intro.OnBoarding
-import com.zkrallah.z_students.ui.theme.ZStudentsTheme
 import kotlinx.coroutines.runBlocking
 
 val screens = listOf(
@@ -65,7 +63,6 @@ val routes = listOf(
     "Chat"
 )
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(mainViewModel: MainViewModel) {
     runBlocking {
@@ -73,14 +70,11 @@ fun MainScreen(mainViewModel: MainViewModel) {
     }
 
     val startingDestination = mainViewModel.startingDestination.collectAsState()
-
-    startingDestination.value?.let {
-        SetupNavigation(startingScreen = it)
-    } ?: OnBoarding(mainViewModel::setOnBoardingStatus)
+    SetupNavigation(startingScreen = startingDestination.value, mainViewModel = mainViewModel)
 }
 
 @Composable
-fun SetupNavigation(startingScreen: String) {
+fun SetupNavigation(startingScreen: String, mainViewModel: MainViewModel) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -99,13 +93,19 @@ fun SetupNavigation(startingScreen: String) {
                 }
             }
         ) {
-            Navigation(startingScreen, navController = navController, modifier = Modifier.padding(it))
+            Navigation(startingScreen, navController, Modifier.padding(it), mainViewModel)
         }
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Navigation(startingScreen: String, navController: NavHostController, modifier: Modifier) {
+fun Navigation(
+    startingScreen: String,
+    navController: NavHostController,
+    modifier: Modifier,
+    mainViewModel: MainViewModel
+) {
     NavHost(navController = navController, startDestination = startingScreen) {
         composable(route = "Home") {
             HomeScreen()
@@ -119,6 +119,12 @@ fun Navigation(startingScreen: String, navController: NavHostController, modifie
         composable(route = "Login") {
             LoginScreen(
                 navController = navController
+            )
+        }
+        composable(route = "OnBoarding") {
+            OnBoarding(
+                navController = navController,
+                mainViewModel = mainViewModel
             )
         }
     }
@@ -204,47 +210,6 @@ fun BottomNavigationBar(
                         }
                     }
                 })
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ZStudentsTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            val navController = rememberNavController()
-            Scaffold(
-                bottomBar = {
-                    BottomNavigationBar(items = listOf(
-                        BottomNavItem(
-                            "Home",
-                            "home",
-                            icon = Icons.Default.Home
-                        ),
-                        BottomNavItem(
-                            "Chat",
-                            "chat",
-                            icon = Icons.Default.Email
-                        ),
-                        BottomNavItem(
-                            "Settings",
-                            "settings",
-                            icon = Icons.Default.Settings
-                        )
-                    ),
-                        navController = navController,
-                        onItemClick = {
-                            navController.navigate(it.route)
-                        }
-                    )
-                }
-            ) {
-                Navigation("Home", navController = navController, modifier = Modifier.padding(it))
-            }
         }
     }
 }

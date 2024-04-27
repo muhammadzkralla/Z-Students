@@ -1,11 +1,9 @@
 package com.zkrallah.z_students.presentation.intro
 
-import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,9 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -44,13 +41,10 @@ import com.zkrallah.z_students.presentation.main.MainViewModel
 import com.zkrallah.z_students.ui.theme.Grey300
 import com.zkrallah.z_students.ui.theme.Grey900
 import com.zkrallah.z_students.ui.theme.RedLight
-import kotlin.reflect.KFunction0
-
-const val TAG = "OnBoardingScreen"
 
 @ExperimentalPagerApi
 @Composable
-fun OnBoarding(setOnBoardingDone: () -> Unit) {
+fun OnBoarding(mainViewModel: MainViewModel, navController: NavController) {
     val items = ArrayList<OnBoarding>()
 
     items.add(
@@ -86,7 +80,8 @@ fun OnBoarding(setOnBoardingDone: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White),
-        setOnBoardingDone
+        mainViewModel,
+        navController
     )
 }
 
@@ -96,7 +91,8 @@ fun OnBoardingPager(
     item: List<OnBoarding>,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
-    setOnBoardingDone: () -> Unit
+    mainViewModel: MainViewModel,
+    navController: NavController
 ) {
     Box(modifier = modifier) {
         Column(
@@ -129,7 +125,7 @@ fun OnBoardingPager(
             PagerIndicator(item.size, pagerState.currentPage)
         }
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-            BottomSection(pagerState.currentPage, setOnBoardingDone)
+            BottomSection(pagerState.currentPage, mainViewModel, navController)
         }
     }
 }
@@ -196,16 +192,16 @@ fun Indicator(isSelected: Boolean) {
 }
 
 @Composable
-fun BottomSection(currentPager: Int, setOnBoardingDone: () -> Unit) {
+fun BottomSection(currentPager: Int, mainViewModel: MainViewModel, navController: NavController) {
     Row(
         modifier = Modifier
             .padding(bottom = 20.dp)
             .fillMaxWidth(),
-        horizontalArrangement = if (currentPager != 2) Arrangement.SpaceBetween else Arrangement.Center
+        horizontalArrangement = Arrangement.Center
     ) {
         if (currentPager == 2) {
             OutlinedButton(
-                onClick = { setOnBoardingDone() },
+                onClick = { navigateToLogin(mainViewModel, navController) },
                 shape = RoundedCornerShape(50),
             ) {
                 Text(
@@ -216,25 +212,22 @@ fun BottomSection(currentPager: Int, setOnBoardingDone: () -> Unit) {
                 )
             }
         } else {
-            SkipNextButton(text = "Skip", modifier = Modifier.padding(start = 20.dp)
-            ) { setOnBoardingDone() }
-            SkipNextButton(text = "Next", modifier = Modifier.padding(end = 20.dp)) {  }
+            OutlinedButton(
+                onClick = { navigateToLogin(mainViewModel, navController) },
+                shape = RoundedCornerShape(50),
+            ) {
+                Text(
+                    text = "Skip",
+                    modifier = Modifier
+                        .padding(vertical = 8.dp, horizontal = 40.dp),
+                    color = Grey900
+                )
+            }
         }
     }
 }
 
-fun log(message: String) {
-    Log.d(TAG, "log: $message")
-}
-
-@Composable
-fun SkipNextButton(text: String, modifier: Modifier, onClick: () -> Unit) {
-    Text(
-        text = text,
-        color = Color.Black,
-        modifier = modifier.clickable { onClick() },
-        fontSize = 18.sp,
-        style = MaterialTheme.typography.bodyLarge,
-        fontWeight = FontWeight.Medium
-    )
+fun navigateToLogin(mainViewModel: MainViewModel, navController: NavController) {
+    mainViewModel.setOnBoardingStatus()
+    navController.navigate("Login")
 }
