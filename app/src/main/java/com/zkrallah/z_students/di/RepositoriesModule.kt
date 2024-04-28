@@ -28,8 +28,9 @@ object RepositoriesModule {
     @Provides
     @Singleton
     fun provideLoginRepository(
-        zHttpClient: ZHttpClient
+        zHttpClient: ZHttpClient,
+        dataStore: DataStore
     ): LoginRepository {
-        return LoginRepositoryImpl(zHttpClient)
+        return LoginRepositoryImpl(zHttpClient, dataStore)
     }
 }

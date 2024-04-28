@@ -1,5 +1,7 @@
 package com.zkrallah.z_students.data.dataStore
 
+import com.zkrallah.z_students.domain.models.Token
+
 interface DataStore {
     suspend fun getIsOnBoardingFinished():Boolean
 
@@ -9,7 +11,7 @@ interface DataStore {
 
     suspend fun setIsLoggedIn(isLogged: Boolean)
 
-    suspend fun insertToken(token: String)
+    suspend fun insertToken(data: Token)
 
     suspend fun getToken(): String
 

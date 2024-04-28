@@ -6,6 +6,4 @@ interface MainRepository {
     suspend fun setOnBoardingDone()
 
     suspend fun getLoggedInDone(): Boolean
-
-    suspend fun setLoggedInDone()
 }

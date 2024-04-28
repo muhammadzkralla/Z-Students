@@ -1,6 +1,5 @@
 package com.zkrallah.z_students.presentation.login
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -26,10 +24,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.runBlocking
-import kotlin.math.log
 
 @Composable
 fun LoginScreen(
@@ -40,7 +34,13 @@ fun LoginScreen(
     val password = remember { mutableStateOf(TextFieldValue()) }
     val loginStatus = loginViewModel.loginStatus.collectAsState()
 
-    Log.d("LoginScreen", "LoginScreen: ${loginStatus.value}")
+    loginStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            loginViewModel.setLoggedInStatus()
+            loginViewModel.saveUserAndTokens(apiResponse.data!!)
+            navController.navigate("Home")
+        }
+    }
 
     Column(
         modifier = Modifier

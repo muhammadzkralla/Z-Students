@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
 ): ViewModel() {
     private val _loginStatus: MutableStateFlow<ApiResponse<Token?>?> = MutableStateFlow(null)
     val loginStatus: StateFlow<ApiResponse<Token?>?> = _loginStatus
@@ -22,6 +22,18 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             val response = loginRepository.login(email, password)
             _loginStatus.emit(response)
+        }
+    }
+
+    fun setLoggedInStatus() {
+        viewModelScope.launch {
+            loginRepository.setLoggedInDone()
+        }
+    }
+
+    fun saveUserAndTokens(data: Token) {
+        viewModelScope.launch {
+            loginRepository.saveUserData(data)
         }
     }
 

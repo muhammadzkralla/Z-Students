@@ -17,8 +17,4 @@ class MainRepositoryImpl(
     override suspend fun getLoggedInDone(): Boolean {
         return dataStore.getIsLoggedIn()
     }
-
-    override suspend fun setLoggedInDone() {
-        dataStore.setIsLoggedIn(true)
-    }
 }

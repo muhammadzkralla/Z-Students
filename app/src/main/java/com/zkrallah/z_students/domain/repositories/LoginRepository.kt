@@ -5,4 +5,8 @@ import com.zkrallah.z_students.domain.response.ApiResponse
 
 interface LoginRepository {
     suspend fun login(email: String, password: String): ApiResponse<Token?>?
+
+    suspend fun setLoggedInDone()
+
+    suspend fun saveUserData(data: Token)
 }

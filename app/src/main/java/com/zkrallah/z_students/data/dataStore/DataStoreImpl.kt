@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.zkrallah.z_students.domain.models.Token
 import com.zkrallah.z_students.domain.models.User
 import com.zkrallah.z_students.domain.models.toJson
 import com.zkrallah.z_students.domain.models.toUserModel
@@ -77,10 +78,11 @@ class DataStoreImpl(
         }
     }
 
-    override suspend fun insertToken(token: String) {
+    override suspend fun insertToken(data: Token) {
         withContext(dispatcher) {
+            saveUserModel(data.user)
             mDataStore.edit { settings ->
-                settings[stringPreferencesKey(TOKEN)] = token
+                settings[stringPreferencesKey(TOKEN)] = data.accessToken!!
             }
         }
     }

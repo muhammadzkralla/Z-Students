@@ -33,10 +33,4 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun setLoggedInStatus() {
-        viewModelScope.launch {
-            mainRepository.setLoggedInDone()
-        }
-    }
-
 }
