@@ -1,3 +1,6 @@
+package com.zkrallah.z_students.presentation.login
+
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +12,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -20,14 +24,23 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.runBlocking
+import kotlin.math.log
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    val context = LocalContext.current
-
+fun LoginScreen(
+    navController: NavController,
+    loginViewModel: LoginViewModel = hiltViewModel()
+) {
     val email = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
+    val loginStatus = loginViewModel.loginStatus.collectAsState()
+
+    Log.d("LoginScreen", "LoginScreen: ${loginStatus.value}")
 
     Column(
         modifier = Modifier
@@ -83,8 +96,7 @@ fun LoginScreen(navController: NavController) {
 
         Button(
             onClick = {
-                // Handle login button click
-                // You can perform login logic here
+                loginViewModel.login(email.value.text, password.value.text)
             },
             modifier = Modifier
                 .fillMaxWidth()
