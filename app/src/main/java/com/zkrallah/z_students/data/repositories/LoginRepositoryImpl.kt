@@ -1,5 +1,6 @@
 package com.zkrallah.z_students.data.repositories
 
+import com.zkrallah.z_students.LOGIN_ENDPOINT
 import com.zkrallah.z_students.data.dataStore.DataStore
 import com.zkrallah.z_students.domain.dto.LoginDto
 import com.zkrallah.z_students.domain.models.Token
@@ -13,8 +14,7 @@ class LoginRepositoryImpl(
 ) : LoginRepository {
     override suspend fun login(email: String, password: String): ApiResponse<Token?>? {
         val loginDto = LoginDto(email, password)
-        val apiResponse = zHttpClient.post<ApiResponse<Token?>>("api/auth/login", loginDto,
-            null, null)
+        val apiResponse = zHttpClient.post<ApiResponse<Token?>>(LOGIN_ENDPOINT, loginDto, null, null)
 
         return apiResponse?.body
     }

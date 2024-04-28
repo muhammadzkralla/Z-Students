@@ -1,6 +1,5 @@
 package com.zkrallah.z_students.presentation.main
 
-import com.zkrallah.z_students.presentation.login.LoginScreen
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,10 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,33 +30,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.zkrallah.z_students.ROUTES
+import com.zkrallah.z_students.SCREENS
 import com.zkrallah.z_students.domain.models.BottomNavItem
 import com.zkrallah.z_students.presentation.intro.OnBoarding
+import com.zkrallah.z_students.presentation.login.LoginScreen
 import kotlinx.coroutines.runBlocking
 
-val screens = listOf(
-    BottomNavItem(
-        "Home",
-        "home",
-        icon = Icons.Default.Home
-    ),
-    BottomNavItem(
-        "Chat",
-        "chat",
-        icon = Icons.Default.Email
-    ),
-    BottomNavItem(
-        "Settings",
-        "settings",
-        icon = Icons.Default.Settings
-    )
-)
-
-val routes = listOf(
-    "Home",
-    "Settings",
-    "Chat"
-)
 
 @Composable
 fun MainScreen(mainViewModel: MainViewModel) {
@@ -83,8 +58,8 @@ fun SetupNavigation(startingScreen: String, mainViewModel: MainViewModel) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         Scaffold(
             bottomBar = {
-                if (routes.contains(navBackStackEntry?.destination?.route)) {
-                    BottomNavigationBar(items = screens,
+                if (ROUTES.contains(navBackStackEntry?.destination?.route)) {
+                    BottomNavigationBar(items = SCREENS,
                         navController = navController,
                         onItemClick = {
                             navController.navigate(it.route)
