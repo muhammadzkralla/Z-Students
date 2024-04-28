@@ -19,7 +19,7 @@ object Module {
     @Singleton
     fun provideZHttpClient(): ZHttpClient {
         return ZHttpClient.Builder()
-            .baseUrl("http://192.168.1.4:8080")
+            .baseUrl("http://192.168.1.5:8080")
             .connectionTimeout(20000)
             .readTimeout(20000)
             .build()

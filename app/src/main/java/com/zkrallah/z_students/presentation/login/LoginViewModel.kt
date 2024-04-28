@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zkrallah.z_students.domain.models.Token
 import com.zkrallah.z_students.domain.repositories.LoginRepository
-import com.zkrallah.zhttp.Response
+import com.zkrallah.z_students.domain.response.ApiResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,8 +15,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ): ViewModel() {
-    private val _loginStatus: MutableStateFlow<Response<Token>?> = MutableStateFlow(null)
-    val loginStatus: StateFlow<Response<Token>?> = _loginStatus
+    private val _loginStatus: MutableStateFlow<ApiResponse<Token?>?> = MutableStateFlow(null)
+    val loginStatus: StateFlow<ApiResponse<Token?>?> = _loginStatus
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
