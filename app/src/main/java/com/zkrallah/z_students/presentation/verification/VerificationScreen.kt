@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -31,6 +32,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.zkrallah.z_students.R
 import com.zkrallah.z_students.ui.theme.GreyDark
 import com.zkrallah.z_students.ui.theme.GreyLight
 
@@ -43,6 +49,7 @@ fun VerificationScreen(
     var otpValue by remember {
         mutableStateOf("")
     }
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.otp))
     val verificationStatus = verificationViewModel.verificationStatus.collectAsState()
 
     verificationStatus.value?.let { apiResponse ->
@@ -58,6 +65,16 @@ fun VerificationScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
+        LottieAnimation(
+            composition = composition,
+            iterations = LottieConstants.IterateForever,
+            modifier = Modifier
+                .size(200.dp)
+                .fillMaxWidth()
+                .align(alignment = Alignment.CenterHorizontally)
+        )
+
         OtpTextField(
             otpText = otpValue,
             onOtpTextChange = { value, otpInputFilled ->

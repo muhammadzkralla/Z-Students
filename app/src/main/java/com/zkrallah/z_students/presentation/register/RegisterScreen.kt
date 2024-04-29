@@ -41,6 +41,7 @@ fun RegisterScreen(
     val password = remember { mutableStateOf(TextFieldValue()) }
     val firstName = remember { mutableStateOf(TextFieldValue()) }
     val lastName = remember { mutableStateOf(TextFieldValue()) }
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login))
     val loginStatus = registerViewModel.registerStatus.collectAsState()
 
     loginStatus.value?.let { apiResponse ->
@@ -52,7 +53,7 @@ fun RegisterScreen(
         }
     }
 
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login))
+
 
     Column(
         modifier = Modifier
