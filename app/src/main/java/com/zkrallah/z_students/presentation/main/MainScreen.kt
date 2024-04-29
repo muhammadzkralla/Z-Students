@@ -35,6 +35,7 @@ import com.zkrallah.z_students.SCREENS
 import com.zkrallah.z_students.domain.models.BottomNavItem
 import com.zkrallah.z_students.presentation.intro.OnBoarding
 import com.zkrallah.z_students.presentation.login.LoginScreen
+import com.zkrallah.z_students.presentation.register.RegisterScreen
 import kotlinx.coroutines.runBlocking
 
 
@@ -90,6 +91,11 @@ fun Navigation(
         }
         composable(route = "Settings") {
             SettingsScreen()
+        }
+        composable(route = "Register") {
+            RegisterScreen(
+                navController = navController
+            )
         }
         composable(route = "Login") {
             LoginScreen(

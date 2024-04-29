@@ -1,6 +1,6 @@
-package com.zkrallah.z_students.presentation.login
+package com.zkrallah.z_students.presentation.register
 
-import androidx.compose.foundation.clickable
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +19,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -34,23 +33,25 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.zkrallah.z_students.R
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel = hiltViewModel()
+    registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
     val email = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
-    val loginStatus = loginViewModel.loginStatus.collectAsState()
+    val firstName = remember { mutableStateOf(TextFieldValue()) }
+    val lastName = remember { mutableStateOf(TextFieldValue()) }
+    val loginStatus = registerViewModel.registerStatus.collectAsState()
 
     loginStatus.value?.let { apiResponse ->
+        Log.d("RegisterScreen", "RegisterScreen: $apiResponse")
         if (apiResponse.success) {
-            loginViewModel.setLoggedInStatus()
-            loginViewModel.saveUserAndTokens(apiResponse.data!!)
-            navController.navigate("Home")
+            registerViewModel.saveUser(apiResponse.data!!)
+            navController.navigate("Login")
         }
     }
 
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.register))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login))
 
     Column(
         modifier = Modifier
@@ -92,38 +93,60 @@ fun LoginScreen(
                 .padding(vertical = 8.dp)
         )
 
-        Text(
-            text = "Sign Up",
-            color = Color.Blue,
+        OutlinedTextField(
+            value = firstName.value,
+            onValueChange = { firstName.value = it },
+            label = { Text("First Name") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             modifier = Modifier
-                .padding(top = 8.dp)
-                .clickable {
-                    // Navigate to sign up screen
-                    navController.navigate("Register")
-                }
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
         )
 
-        Text(
-            text = "Forget Password?",
-            color = Color.Blue,
+        OutlinedTextField(
+            value = lastName.value,
+            onValueChange = { lastName.value = it },
+            label = { Text("Last Name") },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             modifier = Modifier
-                .padding(top = 8.dp)
-                .clickable {
-                    // Navigate to forget password screen
-                    navController.navigate("ForgetPassword")
-                }
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
         )
 
         OutlinedButton(
             onClick = {
-                loginViewModel.login(email.value.text, password.value.text)
+                registerViewModel.registerStudent(
+                    email.value.text,
+                    password.value.text,
+                    firstName.value.text,
+                    lastName.value.text
+                )
             },
             shape = RoundedCornerShape(50),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
         ) {
-            Text("Login")
+            Text("Register as a Student")
+        }
+
+        OutlinedButton(
+            onClick = {
+                registerViewModel.registerTeacher(
+                    email.value.text,
+                    password.value.text,
+                    firstName.value.text,
+                    lastName.value.text
+                )
+            },
+            shape = RoundedCornerShape(50),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        ) {
+            Text("Register as a Teacher")
         }
     }
 }

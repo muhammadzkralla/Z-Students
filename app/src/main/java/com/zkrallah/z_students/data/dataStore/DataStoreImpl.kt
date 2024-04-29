@@ -33,13 +33,13 @@ class DataStoreImpl(
         const val USER = "user"
     }
 
-    private suspend fun saveUserModel(userModel: User?) {
+    override suspend fun saveUserModel(userModel: User?) {
         mDataStore.edit { preferences ->
             preferences[stringPreferencesKey(USER)] = userModel?.toJson() ?: ""
         }
     }
 
-    suspend fun getUserModel() = withContext(dispatcher) {
+    override suspend fun getUserModel(): User = withContext(dispatcher) {
         mDataStore.data.map { preferences ->
             try {
                 val string = preferences[stringPreferencesKey(USER)] ?: ""
@@ -47,7 +47,7 @@ class DataStoreImpl(
             } catch (e: Exception) {
                 null
             }
-        }.first()
+        }.first()!!
     }
 
     override suspend fun getIsOnBoardingFinished(): Boolean = withContext(dispatcher) {
