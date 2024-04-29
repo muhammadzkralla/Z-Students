@@ -104,7 +104,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.12.0")
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
 }
 kapt {
     correctErrorTypes = true

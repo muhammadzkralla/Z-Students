@@ -25,10 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.zkrallah.z_students.ROUTES
 import com.zkrallah.z_students.SCREENS
@@ -36,6 +38,7 @@ import com.zkrallah.z_students.domain.models.BottomNavItem
 import com.zkrallah.z_students.presentation.intro.OnBoarding
 import com.zkrallah.z_students.presentation.login.LoginScreen
 import com.zkrallah.z_students.presentation.register.RegisterScreen
+import com.zkrallah.z_students.presentation.verification.VerificationScreen
 import kotlinx.coroutines.runBlocking
 
 
@@ -95,6 +98,15 @@ fun Navigation(
         composable(route = "Register") {
             RegisterScreen(
                 navController = navController
+            )
+        }
+        composable(route = "Verification/{email}", arguments = listOf(navArgument("email") {
+            type = NavType.StringType
+        })) { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            VerificationScreen(
+                navController = navController,
+                email = email!!
             )
         }
         composable(route = "Login") {

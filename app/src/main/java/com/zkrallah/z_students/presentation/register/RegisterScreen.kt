@@ -47,7 +47,8 @@ fun RegisterScreen(
         Log.d("RegisterScreen", "RegisterScreen: $apiResponse")
         if (apiResponse.success) {
             registerViewModel.saveUser(apiResponse.data!!)
-            navController.navigate("Login")
+            val userEmail = email.value.text
+            navController.navigate("Verification/${userEmail}")
         }
     }
 
