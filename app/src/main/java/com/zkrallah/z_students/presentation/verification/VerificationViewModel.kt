@@ -18,6 +18,8 @@ class VerificationViewModel @Inject constructor(
 ) : ViewModel() {
     private val _verificationStatus: MutableStateFlow<ApiResponse<MessageResponse?>?> = MutableStateFlow(null)
     val verificationStatus: StateFlow<ApiResponse<MessageResponse?>?> = _verificationStatus
+    private val _resendStatus: MutableStateFlow<ApiResponse<MessageResponse?>?> = MutableStateFlow(null)
+    val resendStatus: StateFlow<ApiResponse<MessageResponse?>?> = _resendStatus
 
 
     fun verifyCode(email: String, code: Int) {
@@ -26,9 +28,9 @@ class VerificationViewModel @Inject constructor(
         }
     }
 
-    fun getUserEmail() {
+    fun resendCode(email: String) {
         viewModelScope.launch {
-
+            _resendStatus.emit(authRepository.resendCode(email))
         }
     }
 }

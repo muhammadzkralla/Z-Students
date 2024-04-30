@@ -98,7 +98,6 @@ fun LoginScreen(
             modifier = Modifier
                 .padding(top = 8.dp)
                 .clickable {
-                    // Navigate to sign up screen
                     navController.navigate("Register")
                 }
         )
@@ -109,8 +108,7 @@ fun LoginScreen(
             modifier = Modifier
                 .padding(top = 8.dp)
                 .clickable {
-                    // Navigate to forget password screen
-                    navController.navigate("ForgetPassword")
+                    navController.navigate("ResetPassword")
                 }
         )
 

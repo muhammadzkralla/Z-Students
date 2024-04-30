@@ -30,8 +30,10 @@ val ROUTES = listOf(
     "Chat"
 )
 
-const val BASE_URL = "http://192.168.1.5:8080"
+const val BASE_URL = "http://192.168.1.7:8080"
 const val LOGIN_ENDPOINT = "api/auth/login"
 const val REGISTER_STUDENT_ENDPOINT = "api/auth/student/signup"
 const val REGISTER_TEACHER_ENDPOINT = "api/auth/teacher/signup"
 const val VERIFY_CODE = "api/auth/verify-code"
+const val RESEND_CODE = "api/auth/regenerate-code"
+const val RESET_PASSWORD = "api/auth/reset-password"

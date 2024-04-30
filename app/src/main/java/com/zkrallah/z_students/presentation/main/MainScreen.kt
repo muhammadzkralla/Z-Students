@@ -38,6 +38,7 @@ import com.zkrallah.z_students.domain.models.BottomNavItem
 import com.zkrallah.z_students.presentation.intro.OnBoarding
 import com.zkrallah.z_students.presentation.login.LoginScreen
 import com.zkrallah.z_students.presentation.register.RegisterScreen
+import com.zkrallah.z_students.presentation.reset.ResetPasswordScreen
 import com.zkrallah.z_students.presentation.verification.VerificationScreen
 import kotlinx.coroutines.runBlocking
 
@@ -100,13 +101,28 @@ fun Navigation(
                 navController = navController
             )
         }
-        composable(route = "Verification/{email}", arguments = listOf(navArgument("email") {
-            type = NavType.StringType
-        })) { backStackEntry ->
+        composable(
+            route = "Verification/{email}",
+            arguments = listOf(
+                navArgument("email") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
             val email = backStackEntry.arguments?.getString("email")
             VerificationScreen(
                 navController = navController,
                 email = email!!
+            )
+        }
+        composable(route = "Register") {
+            RegisterScreen(
+                navController = navController
+            )
+        }
+        composable(route = "ResetPassword") {
+            ResetPasswordScreen(
+                navController = navController
             )
         }
         composable(route = "Login") {
