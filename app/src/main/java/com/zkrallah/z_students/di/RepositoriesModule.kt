@@ -3,8 +3,10 @@ package com.zkrallah.z_students.di
 import com.zkrallah.z_students.data.dataStore.DataStore
 import com.zkrallah.z_students.data.repositories.AuthRepositoryImpl
 import com.zkrallah.z_students.data.repositories.MainRepositoryImpl
+import com.zkrallah.z_students.data.repositories.UserRepositoryImpl
 import com.zkrallah.z_students.domain.repositories.AuthRepository
 import com.zkrallah.z_students.domain.repositories.MainRepository
+import com.zkrallah.z_students.domain.repositories.UserRepository
 import com.zkrallah.zhttp.ZHttpClient
 import dagger.Module
 import dagger.Provides
@@ -32,5 +34,14 @@ object RepositoriesModule {
         dataStore: DataStore
     ): AuthRepository {
         return AuthRepositoryImpl(zHttpClient, dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        zHttpClient: ZHttpClient,
+        dataStore: DataStore
+    ): UserRepository {
+        return UserRepositoryImpl(zHttpClient, dataStore)
     }
 }

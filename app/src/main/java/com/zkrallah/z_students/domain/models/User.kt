@@ -16,8 +16,8 @@ data class User(
     val emailVerified: Boolean?,
     val enabled: Boolean?,
     val firstName: String?,
-    val id: Int?,
-    val imageUrl: String?,
+    val id: Long?,
+    var imageUrl: String?,
     val lastName: String?,
     val password: String?,
     val username: String?
