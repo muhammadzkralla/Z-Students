@@ -1,8 +1,7 @@
-package com.zkrallah.z_students.presentation.main
+package com.zkrallah.z_students.presentation.intro
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zkrallah.z_students.data.dataStore.DataStore
 import com.zkrallah.z_students.domain.repositories.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,10 +10,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class OnBoardingViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
-
     private val _startingDestination: MutableStateFlow<String> = MutableStateFlow("OnBoarding")
     val startingDestination: StateFlow<String> = _startingDestination
 
@@ -32,5 +30,4 @@ class MainViewModel @Inject constructor(
             mainRepository.setOnBoardingDone()
         }
     }
-
 }

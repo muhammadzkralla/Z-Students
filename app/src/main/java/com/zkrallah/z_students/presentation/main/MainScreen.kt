@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -36,6 +37,7 @@ import com.zkrallah.z_students.ROUTES
 import com.zkrallah.z_students.SCREENS
 import com.zkrallah.z_students.domain.models.BottomNavItem
 import com.zkrallah.z_students.presentation.intro.OnBoarding
+import com.zkrallah.z_students.presentation.intro.OnBoardingViewModel
 import com.zkrallah.z_students.presentation.login.LoginScreen
 import com.zkrallah.z_students.presentation.register.RegisterScreen
 import com.zkrallah.z_students.presentation.reset.ResetPasswordScreen
@@ -44,17 +46,17 @@ import kotlinx.coroutines.runBlocking
 
 
 @Composable
-fun MainScreen(mainViewModel: MainViewModel) {
+fun MainScreen(onBoardingViewModel: OnBoardingViewModel = hiltViewModel()) {
     runBlocking {
-        mainViewModel.getStartingDestination()
+        onBoardingViewModel.getStartingDestination()
     }
 
-    val startingDestination = mainViewModel.startingDestination.collectAsState()
-    SetupNavigation(startingScreen = startingDestination.value, mainViewModel = mainViewModel)
+    val startingDestination = onBoardingViewModel.startingDestination.collectAsState()
+    SetupNavigation(startingScreen = startingDestination.value)
 }
 
 @Composable
-fun SetupNavigation(startingScreen: String, mainViewModel: MainViewModel) {
+fun SetupNavigation(startingScreen: String) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -73,7 +75,7 @@ fun SetupNavigation(startingScreen: String, mainViewModel: MainViewModel) {
                 }
             }
         ) {
-            Navigation(startingScreen, navController, Modifier.padding(it), mainViewModel)
+            Navigation(startingScreen, navController, Modifier.padding(it))
         }
     }
 }
@@ -83,8 +85,7 @@ fun SetupNavigation(startingScreen: String, mainViewModel: MainViewModel) {
 fun Navigation(
     startingScreen: String,
     navController: NavHostController,
-    modifier: Modifier,
-    mainViewModel: MainViewModel
+    modifier: Modifier
 ) {
     NavHost(navController = navController, startDestination = startingScreen) {
         composable(route = "Home") {
@@ -132,8 +133,7 @@ fun Navigation(
         }
         composable(route = "OnBoarding") {
             OnBoarding(
-                navController = navController,
-                mainViewModel = mainViewModel
+                navController = navController
             )
         }
     }

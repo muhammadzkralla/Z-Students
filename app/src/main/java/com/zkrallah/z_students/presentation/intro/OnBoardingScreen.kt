@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -37,14 +38,13 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.domain.models.OnBoarding
-import com.zkrallah.z_students.presentation.main.MainViewModel
 import com.zkrallah.z_students.ui.theme.Grey300
 import com.zkrallah.z_students.ui.theme.Grey900
 import com.zkrallah.z_students.ui.theme.RedLight
 
 @ExperimentalPagerApi
 @Composable
-fun OnBoarding(mainViewModel: MainViewModel, navController: NavController) {
+fun OnBoarding(onBoardingViewModel: OnBoardingViewModel = hiltViewModel(), navController: NavController) {
     val items = ArrayList<OnBoarding>()
 
     items.add(
@@ -80,7 +80,7 @@ fun OnBoarding(mainViewModel: MainViewModel, navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color.White),
-        mainViewModel,
+        onBoardingViewModel,
         navController
     )
 }
@@ -91,7 +91,7 @@ fun OnBoardingPager(
     item: List<OnBoarding>,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
-    mainViewModel: MainViewModel,
+    onBoardingViewModel: OnBoardingViewModel,
     navController: NavController
 ) {
     Box(modifier = modifier) {
@@ -125,7 +125,7 @@ fun OnBoardingPager(
             PagerIndicator(item.size, pagerState.currentPage)
         }
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-            BottomSection(pagerState.currentPage, mainViewModel, navController)
+            BottomSection(pagerState.currentPage, onBoardingViewModel, navController)
         }
     }
 }
@@ -192,7 +192,7 @@ fun Indicator(isSelected: Boolean) {
 }
 
 @Composable
-fun BottomSection(currentPager: Int, mainViewModel: MainViewModel, navController: NavController) {
+fun BottomSection(currentPager: Int, onBoardingViewModel: OnBoardingViewModel, navController: NavController) {
     Row(
         modifier = Modifier
             .padding(bottom = 20.dp)
@@ -201,7 +201,7 @@ fun BottomSection(currentPager: Int, mainViewModel: MainViewModel, navController
     ) {
         if (currentPager == 2) {
             OutlinedButton(
-                onClick = { navigateToLogin(mainViewModel, navController) },
+                onClick = { navigateToLogin(onBoardingViewModel, navController) },
                 shape = RoundedCornerShape(50),
             ) {
                 Text(
@@ -213,7 +213,7 @@ fun BottomSection(currentPager: Int, mainViewModel: MainViewModel, navController
             }
         } else {
             OutlinedButton(
-                onClick = { navigateToLogin(mainViewModel, navController) },
+                onClick = { navigateToLogin(onBoardingViewModel, navController) },
                 shape = RoundedCornerShape(50),
             ) {
                 Text(
@@ -227,7 +227,7 @@ fun BottomSection(currentPager: Int, mainViewModel: MainViewModel, navController
     }
 }
 
-fun navigateToLogin(mainViewModel: MainViewModel, navController: NavController) {
-    mainViewModel.setOnBoardingStatus()
+fun navigateToLogin(onBoardingViewModel: OnBoardingViewModel, navController: NavController) {
+    onBoardingViewModel.setOnBoardingStatus()
     navController.navigate("Login")
 }
