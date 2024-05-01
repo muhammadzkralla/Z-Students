@@ -42,9 +42,9 @@ import com.zkrallah.z_students.presentation.login.LoginScreen
 import com.zkrallah.z_students.presentation.register.RegisterScreen
 import com.zkrallah.z_students.presentation.reset.ConfirmResetScreen
 import com.zkrallah.z_students.presentation.reset.ResetPasswordScreen
+import com.zkrallah.z_students.presentation.user.UserScreen
 import com.zkrallah.z_students.presentation.verification.VerificationScreen
 import kotlinx.coroutines.runBlocking
-
 
 @Composable
 fun MainScreen(onBoardingViewModel: OnBoardingViewModel = hiltViewModel()) {
@@ -89,14 +89,15 @@ fun Navigation(
     modifier: Modifier
 ) {
     NavHost(navController = navController, startDestination = startingScreen) {
-        composable(route = "Home") {
-            HomeScreen()
+        composable(route = "OnBoarding") {
+            OnBoarding(
+                navController = navController
+            )
         }
-        composable(route = "Chat") {
-            ChatScreen()
-        }
-        composable(route = "Settings") {
-            SettingsScreen()
+        composable(route = "Login") {
+            LoginScreen(
+                navController = navController
+            )
         }
         composable(route = "Register") {
             RegisterScreen(
@@ -115,11 +116,6 @@ fun Navigation(
             VerificationScreen(
                 navController = navController,
                 email = email!!
-            )
-        }
-        composable(route = "Register") {
-            RegisterScreen(
-                navController = navController
             )
         }
         composable(route = "ResetPassword") {
@@ -141,13 +137,14 @@ fun Navigation(
                 email = email!!
             )
         }
-        composable(route = "Login") {
-            LoginScreen(
-                navController = navController
-            )
+        composable(route = "Home") {
+            HomeScreen()
         }
-        composable(route = "OnBoarding") {
-            OnBoarding(
+        composable(route = "Chat") {
+            ChatScreen()
+        }
+        composable(route = "User") {
+            UserScreen(
                 navController = navController
             )
         }
@@ -171,16 +168,6 @@ fun ChatScreen() {
         contentAlignment = Alignment.Center
     ) {
         Text(text = "Chat screen")
-    }
-}
-
-@Composable
-fun SettingsScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Settings screen")
     }
 }
 

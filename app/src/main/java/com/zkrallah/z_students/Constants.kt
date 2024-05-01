@@ -1,9 +1,9 @@
 package com.zkrallah.z_students
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
 import com.zkrallah.z_students.domain.models.BottomNavItem
 
 val SCREENS = listOf(
@@ -18,15 +18,15 @@ val SCREENS = listOf(
         icon = Icons.Default.Email
     ),
     BottomNavItem(
-        "Settings",
-        "settings",
-        icon = Icons.Default.Settings
+        "User",
+        "user",
+        icon = Icons.Default.AccountCircle
     )
 )
 
 val ROUTES = listOf(
     "Home",
-    "Settings",
+    "User",
     "Chat"
 )
 
