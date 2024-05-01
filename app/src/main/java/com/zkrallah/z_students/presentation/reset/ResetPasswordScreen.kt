@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
@@ -13,6 +14,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,6 +25,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.zkrallah.z_students.R
 
 @Composable
 fun ResetPasswordScreen(
@@ -30,6 +37,7 @@ fun ResetPasswordScreen(
     resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
 
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.reset))
     val email = remember { mutableStateOf(TextFieldValue()) }
     val resendStatus = resetPasswordViewModel.resendStatus.collectAsState()
 
@@ -44,9 +52,19 @@ fun ResetPasswordScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment =
+        Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
+        LottieAnimation(
+            composition = composition,
+            iterations = LottieConstants.IterateForever,
+            modifier = Modifier
+                .size(200.dp)
+                .fillMaxWidth()
+                .align(alignment = Alignment.CenterHorizontally)
+        )
 
         OutlinedTextField(
             value = email.value,

@@ -51,9 +51,7 @@ fun VerificationScreen(
     verificationViewModel: VerificationViewModel = hiltViewModel(),
     email: String,
 ) {
-    var otpValue by remember {
-        mutableStateOf("")
-    }
+    var otpValue by remember { mutableStateOf("") }
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.otp))
     val verificationStatus = verificationViewModel.verificationStatus.collectAsState()
     val resendStatus = verificationViewModel.resendStatus.collectAsState()
