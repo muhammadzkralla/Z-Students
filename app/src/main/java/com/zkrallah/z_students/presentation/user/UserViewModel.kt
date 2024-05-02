@@ -42,4 +42,10 @@ class UserViewModel @Inject constructor(
             _uploadPhotoStatus.emit(userRepository.uploadProfilePicture(filePath))
         }
     }
+
+    fun logOut() {
+        viewModelScope.launch {
+            userRepository.logOut()
+        }
+    }
 }

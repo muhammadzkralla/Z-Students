@@ -1,5 +1,8 @@
 package com.zkrallah.z_students.presentation.user
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,6 +46,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
@@ -52,16 +57,31 @@ import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.showToast
+import com.zkrallah.z_students.util.cacheImageToFile
+import com.zkrallah.z_students.util.getImageFileFromRealPath
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScreen(
+    navController: NavController,
     userViewModel: UserViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     userViewModel.getCurrentUser()
+
+    val getContent =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
+            if (uri != null) {
+                Log.d("UserScreen", "Selected URI: $uri")
+                val path = cacheImageToFile(context, uri)
+                val file = getImageFileFromRealPath(path)
+                userViewModel.uploadPhoto(file!!.path)
+            } else {
+                Log.d("UserScreen", "No media selected")
+            }
+        }
 
     val img = remember { mutableStateOf("") }
     val firstName = remember { mutableStateOf(TextFieldValue()) }
@@ -78,8 +98,8 @@ fun UserScreen(
             LaunchedEffect(Unit) {
                 val user = apiResponse.data
                 user?.let {
-                    firstName.value = TextFieldValue(user.firstName!!)
-                    lastName.value = TextFieldValue(user.lastName!!)
+                    firstName.value = TextFieldValue(user.firstName ?: "")
+                    lastName.value = TextFieldValue(user.lastName ?: "")
                     dob.value = TextFieldValue(user.dob ?: "")
                     img.value = user.imageUrl ?: ""
                 }
@@ -93,10 +113,22 @@ fun UserScreen(
                 showToast(context, "Updated")
                 val user = apiResponse.data
                 user?.let {
-                    firstName.value = TextFieldValue(user.firstName!!)
-                    lastName.value = TextFieldValue(user.lastName!!)
+                    firstName.value = TextFieldValue(user.firstName ?: "")
+                    lastName.value = TextFieldValue(user.lastName ?: "")
                     dob.value = TextFieldValue(user.dob ?: "")
                     img.value = user.imageUrl ?: ""
+                }
+            }
+        } else showToast(context, apiResponse.message)
+    }
+
+    uploadPhotoStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            LaunchedEffect(Unit) {
+                showToast(context, "Uploaded")
+                val url = apiResponse.data
+                url?.let {
+                    img.value = url.message ?: ""
                 }
             }
         } else showToast(context, apiResponse.message)
@@ -142,13 +174,16 @@ fun UserScreen(
         ) {
 
             IconButton(
-                onClick = { /* Handle sign out */ },
+                onClick = {
+                    userViewModel.logOut()
+                    navController.navigate("Login")
+                },
                 modifier = Modifier
                     .align(Alignment.End)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_logout),
-                    contentDescription = "Sign Out"
+                    contentDescription = "Log Out"
                 )
             }
 
@@ -187,7 +222,7 @@ fun UserScreen(
                         .clickable { /* Handle change photo */ }
                 ) {
                     IconButton(
-                        onClick = {  },
+                        onClick = { getContent.launch("image/*") },
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_upload),
@@ -301,5 +336,5 @@ fun CoilImage(
 @Preview(showBackground = true)
 @Composable
 fun PreviewUserScreen() {
-    UserScreen()
+    UserScreen(navController = rememberNavController())
 }

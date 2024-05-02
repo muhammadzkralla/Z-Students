@@ -11,4 +11,6 @@ interface UserRepository {
     suspend fun updateUser(firstName: String, lastName: String, dob: String): ApiResponse<User?>?
 
     suspend fun uploadProfilePicture(filePath: String): ApiResponse<MessageResponse?>?
+
+    suspend fun logOut()
 }

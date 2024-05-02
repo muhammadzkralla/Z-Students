@@ -68,7 +68,7 @@ class UserRepositoryImpl(
         val userId = dataStore.getUserModel().id
 
         val imageMultipartBody = MultipartBody(
-            fileName = "image",
+            fileName = "file",
             filePath = filePath,
             contentType = "image/*"
         )
@@ -82,14 +82,10 @@ class UserRepositoryImpl(
                 headers
             )
 
-        apiResponse?.body?.let { response ->
-            if (response.success) {
-                val savedUser = dataStore.getUserModel()
-                savedUser.imageUrl = response.data?.message
-                dataStore.saveUserModel(savedUser)
-            }
-        }
-
         return apiResponse?.body
+    }
+
+    override suspend fun logOut() {
+        dataStore.logOut()
     }
 }

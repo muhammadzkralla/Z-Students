@@ -95,7 +95,6 @@ class DataStoreImpl(
 
     override suspend fun logOut() {
         setIsLoggedIn(false)
-        saveUserModel(null)
     }
 
 }
