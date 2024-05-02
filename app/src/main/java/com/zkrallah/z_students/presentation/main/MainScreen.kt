@@ -70,7 +70,9 @@ fun SetupNavigation(startingScreen: String) {
                     BottomNavigationBar(items = SCREENS,
                         navController = navController,
                         onItemClick = {
-                            navController.navigate(it.route)
+                            navController.navigate(it.route) {
+                                popUpTo(0)
+                            }
                         }
                     )
                 }

@@ -187,9 +187,7 @@ fun UserScreen(
                 onClick = {
                     userViewModel.logOut()
                     navController.navigate("Login") {
-                        popUpTo("User") {
-                            inclusive = true
-                        }
+                        popUpTo(0)
                     }
                 },
                 modifier = Modifier
