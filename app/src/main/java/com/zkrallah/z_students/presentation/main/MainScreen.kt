@@ -141,9 +141,7 @@ fun Navigation(
             )
         }
         composable(route = "Browse") {
-            BrowseScreen(
-                navController = navController
-            )
+            BrowseScreen()
         }
         composable(route = "Chat") {
             ChatScreen()
