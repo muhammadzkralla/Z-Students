@@ -41,6 +41,7 @@ import com.zkrallah.z_students.presentation.intro.OnBoarding
 import com.zkrallah.z_students.presentation.intro.OnBoardingViewModel
 import com.zkrallah.z_students.presentation.login.LoginScreen
 import com.zkrallah.z_students.presentation.register.RegisterScreen
+import com.zkrallah.z_students.presentation.request.RequestScreen
 import com.zkrallah.z_students.presentation.reset.ConfirmResetScreen
 import com.zkrallah.z_students.presentation.reset.ResetPasswordScreen
 import com.zkrallah.z_students.presentation.user.UserScreen
@@ -143,8 +144,8 @@ fun Navigation(
         composable(route = "Browse") {
             BrowseScreen()
         }
-        composable(route = "Chat") {
-            ChatScreen()
+        composable(route = "Request") {
+            RequestScreen()
         }
         composable(route = "User") {
             UserScreen(
