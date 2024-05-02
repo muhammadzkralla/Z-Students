@@ -46,7 +46,7 @@ fun LoginScreen(
         if (apiResponse.success) {
             loginViewModel.setLoggedInStatus()
             loginViewModel.saveUserAndTokens(apiResponse.data!!)
-            navController.navigate("Home")
+            navController.navigate("Browse")
         }
     }
 

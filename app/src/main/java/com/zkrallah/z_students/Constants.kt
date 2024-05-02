@@ -10,8 +10,8 @@ import com.zkrallah.z_students.domain.models.BottomNavItem
 
 val SCREENS = listOf(
     BottomNavItem(
-        "Home",
-        "home",
+        "Browse",
+        "browse",
         icon = Icons.Default.Home
     ),
     BottomNavItem(
@@ -27,7 +27,7 @@ val SCREENS = listOf(
 )
 
 val ROUTES = listOf(
-    "Home",
+    "Browse",
     "User",
     "Chat"
 )

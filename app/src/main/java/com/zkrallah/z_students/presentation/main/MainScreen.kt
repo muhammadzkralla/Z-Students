@@ -36,6 +36,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.zkrallah.z_students.ROUTES
 import com.zkrallah.z_students.SCREENS
 import com.zkrallah.z_students.domain.models.BottomNavItem
+import com.zkrallah.z_students.presentation.browse.BrowseScreen
 import com.zkrallah.z_students.presentation.intro.OnBoarding
 import com.zkrallah.z_students.presentation.intro.OnBoardingViewModel
 import com.zkrallah.z_students.presentation.login.LoginScreen
@@ -139,8 +140,10 @@ fun Navigation(
                 email = email!!
             )
         }
-        composable(route = "Home") {
-            HomeScreen()
+        composable(route = "Browse") {
+            BrowseScreen(
+                navController = navController
+            )
         }
         composable(route = "Chat") {
             ChatScreen()
