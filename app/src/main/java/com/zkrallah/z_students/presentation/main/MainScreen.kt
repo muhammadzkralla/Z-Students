@@ -144,9 +144,7 @@ fun Navigation(
             ChatScreen()
         }
         composable(route = "User") {
-            UserScreen(
-                navController = navController
-            )
+            UserScreen()
         }
     }
 }

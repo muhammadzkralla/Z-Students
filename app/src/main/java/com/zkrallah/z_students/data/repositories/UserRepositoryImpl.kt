@@ -1,8 +1,5 @@
 package com.zkrallah.z_students.data.repositories
 
-import com.zkrallah.z_students.GET_USER
-import com.zkrallah.z_students.UPDATE_USER
-import com.zkrallah.z_students.UPLOAD_PHOTO
 import com.zkrallah.z_students.data.dataStore.DataStore
 import com.zkrallah.z_students.domain.dto.UpdateUserDto
 import com.zkrallah.z_students.domain.models.User
@@ -19,11 +16,13 @@ class UserRepositoryImpl(
 ) : UserRepository {
     override suspend fun getCurrentUser(): ApiResponse<User?>? {
         val token = dataStore.getToken()
-        val authHeader = Header("Authorization", "Bearer $token")
+        val headers = listOf(
+            Header("Authorization", "Bearer $token")
+        )
         val userId = dataStore.getUserModel().id
 
         val apiResponse =
-            zHttpClient.get<ApiResponse<User?>>(GET_USER(userId!!), null, listOf(authHeader))
+            zHttpClient.get<ApiResponse<User?>>("api/users/$userId", null, headers)
 
         apiResponse?.body?.let { response ->
             if (response.success) dataStore.saveUserModel(response.data)
@@ -38,17 +37,20 @@ class UserRepositoryImpl(
         dob: String
     ): ApiResponse<User?>? {
         val token = dataStore.getToken()
-        val authHeader = Header("Authorization", "Bearer $token")
+        val headers = listOf(
+            Header("Authorization", "Bearer $token"),
+            Header("Content-Type", "application/json")
+        )
         val userId = dataStore.getUserModel().id
 
         val updateUserDto = UpdateUserDto(firstName, lastName, dob)
 
         val apiResponse =
             zHttpClient.put<ApiResponse<User?>>(
-                UPDATE_USER(userId!!),
+                "api/users/update-user/$userId",
                 updateUserDto,
                 null,
-                listOf(authHeader)
+                headers
             )
 
         apiResponse?.body?.let { response ->
@@ -60,7 +62,9 @@ class UserRepositoryImpl(
 
     override suspend fun uploadProfilePicture(filePath: String): ApiResponse<MessageResponse?>? {
         val token = dataStore.getToken()
-        val authHeader = Header("Authorization", "Bearer $token")
+        val headers = listOf(
+            Header("Authorization", "Bearer $token")
+        )
         val userId = dataStore.getUserModel().id
 
         val imageMultipartBody = MultipartBody(
@@ -72,10 +76,10 @@ class UserRepositoryImpl(
 
         val apiResponse =
             zHttpClient.multiPart<ApiResponse<MessageResponse?>>(
-                UPLOAD_PHOTO(userId!!),
+                "api/users/${userId}/upload-image",
                 parts,
                 null,
-                listOf(authHeader)
+                headers
             )
 
         apiResponse?.body?.let { response ->

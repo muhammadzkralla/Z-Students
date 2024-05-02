@@ -11,7 +11,7 @@ data class User(
     val codeExpiredAt: String?,
     val createdAt: String?,
     val credentialsNonExpired: Boolean?,
-    val dob: Date?,
+    val dob: String?,
     val email: String?,
     val emailVerified: Boolean?,
     val enabled: Boolean?,
