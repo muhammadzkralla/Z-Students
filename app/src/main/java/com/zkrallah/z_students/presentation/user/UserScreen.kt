@@ -88,10 +88,14 @@ fun UserScreen(
     val lastName = remember { mutableStateOf(TextFieldValue()) }
     val dob = remember { mutableStateOf(TextFieldValue()) }
 
-
     val getUserStatus = userViewModel.getUserStatus.collectAsState()
     val updateUserStatus = userViewModel.updateUserStatus.collectAsState()
     val uploadPhotoStatus = userViewModel.uploadPhotoStatus.collectAsState()
+
+    val selectedDate = remember { mutableStateOf<LocalDate?>(LocalDate.now().minusDays(3)) }
+    val calendarDialogState = rememberUseCaseState()
+    val reverseFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
     getUserStatus.value?.let { apiResponse ->
         if (apiResponse.success) {
@@ -100,8 +104,13 @@ fun UserScreen(
                 user?.let {
                     firstName.value = TextFieldValue(user.firstName ?: "")
                     lastName.value = TextFieldValue(user.lastName ?: "")
-                    dob.value = TextFieldValue(user.dob ?: "")
                     img.value = user.imageUrl ?: ""
+
+                    if (!user.dob.isNullOrEmpty()) {
+                        val date = LocalDate.parse(user.dob, reverseFormatter)
+                        val formattedDate = date.format(formatter)
+                        dob.value = TextFieldValue(formattedDate)
+                    }
                 }
             }
         } else showToast(context, apiResponse.message)
@@ -115,8 +124,13 @@ fun UserScreen(
                 user?.let {
                     firstName.value = TextFieldValue(user.firstName ?: "")
                     lastName.value = TextFieldValue(user.lastName ?: "")
-                    dob.value = TextFieldValue(user.dob ?: "")
                     img.value = user.imageUrl ?: ""
+
+                    if (!user.dob.isNullOrEmpty()) {
+                        val date = LocalDate.parse(user.dob, reverseFormatter)
+                        val formattedDate = date.format(formatter)
+                        dob.value = TextFieldValue(formattedDate)
+                    }
                 }
             }
         } else showToast(context, apiResponse.message)
@@ -134,10 +148,6 @@ fun UserScreen(
         } else showToast(context, apiResponse.message)
     }
 
-    val selectedDate = remember { mutableStateOf<LocalDate?>(LocalDate.now().minusDays(3)) }
-    val calendarDialogState = rememberUseCaseState()
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
     CalendarDialog(
         state = calendarDialogState,
         config = CalendarConfig(
@@ -150,8 +160,8 @@ fun UserScreen(
         ) { newDate ->
             selectedDate.value = newDate
 
-            val date = LocalDate.parse(newDate.toString(), formatter)
-            val formattedDate = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+            val date = LocalDate.parse(newDate.toString(), reverseFormatter)
+            val formattedDate = date.format(formatter)
 
             dob.value = TextFieldValue(formattedDate)
         }
@@ -176,7 +186,11 @@ fun UserScreen(
             IconButton(
                 onClick = {
                     userViewModel.logOut()
-                    navController.navigate("Login")
+                    navController.navigate("Login") {
+                        popUpTo("User") {
+                            inclusive = true
+                        }
+                    }
                 },
                 modifier = Modifier
                     .align(Alignment.End)
