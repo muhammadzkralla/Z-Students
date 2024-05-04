@@ -1,7 +1,9 @@
-package com.zkrallah.z_students.presentation.browse
+package com.zkrallah.z_students.presentation.userclasses
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,8 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,29 +31,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.showToast
 
 @Composable
-fun BrowseScreen(
-    browseViewModel: BrowseViewModel = hiltViewModel()
+fun UserClassesScreen(
+    navController: NavController,
+    userClassesViewModel: UserClassesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        browseViewModel.getClasses()
+        userClassesViewModel.getUserClasses()
     }
 
-    val getClassesStatus = browseViewModel.getClassesStatus.collectAsState()
-    val submitRequestStatus = browseViewModel.submitRequestStatus.collectAsState()
-
-    submitRequestStatus.value?.let { apiResponse ->
-        if (apiResponse.success) {
-            val request = apiResponse.data
-            request?.let {
-                showToast(context, "Request to ${request.requestedClass!!.name} created!")
-            }
-        } else showToast(context, apiResponse.message)
-    }
+    val getClassesStatus = userClassesViewModel.getUserClassesStatus.collectAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -69,7 +61,7 @@ fun BrowseScreen(
                             description = item.description!!,
                             numberOfMembers = item.numberOfUsers!!
                         ) {
-                            browseViewModel.submitRequest(item.id!!)
+                            showToast(context, "Clicked ${item.name}")
                         }
                     }
                 }
@@ -88,6 +80,7 @@ fun ClassItemCard(
 ) {
     Column(
         modifier = Modifier
+            .clickable { onItemClicked() }
             .fillMaxWidth()
             .padding(16.dp)
             .background(color = Color.White, shape = RoundedCornerShape(12.dp))
@@ -119,17 +112,6 @@ fun ClassItemCard(
                 style = MaterialTheme.typography.displaySmall,
                 fontSize = (12.sp)
             )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            IconButton(
-                onClick = { onItemClicked() }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_request),
-                    contentDescription = "Log Out"
-                )
-            }
         }
     }
 }

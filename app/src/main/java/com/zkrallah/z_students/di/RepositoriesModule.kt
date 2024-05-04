@@ -3,11 +3,13 @@ package com.zkrallah.z_students.di
 import com.zkrallah.z_students.data.dataStore.DataStore
 import com.zkrallah.z_students.data.repositories.AuthRepositoryImpl
 import com.zkrallah.z_students.data.repositories.BrowseRepositoryImpl
+import com.zkrallah.z_students.data.repositories.ClassRepositoryImpl
 import com.zkrallah.z_students.data.repositories.MainRepositoryImpl
 import com.zkrallah.z_students.data.repositories.RequestRepositoryImpl
 import com.zkrallah.z_students.data.repositories.UserRepositoryImpl
 import com.zkrallah.z_students.domain.repositories.AuthRepository
 import com.zkrallah.z_students.domain.repositories.BrowseRepository
+import com.zkrallah.z_students.domain.repositories.ClassRepository
 import com.zkrallah.z_students.domain.repositories.MainRepository
 import com.zkrallah.z_students.domain.repositories.RequestsRepository
 import com.zkrallah.z_students.domain.repositories.UserRepository
@@ -65,5 +67,14 @@ object RepositoriesModule {
         dataStore: DataStore
     ): RequestsRepository {
         return RequestRepositoryImpl(zHttpClient, dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideClassRepository(
+        zHttpClient: ZHttpClient,
+        dataStore: DataStore
+    ): ClassRepository {
+        return ClassRepositoryImpl(zHttpClient, dataStore)
     }
 }
