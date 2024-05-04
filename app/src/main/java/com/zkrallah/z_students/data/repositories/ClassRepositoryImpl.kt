@@ -4,6 +4,7 @@ import android.util.Log
 import com.zkrallah.z_students.data.dataStore.DataStore
 import com.zkrallah.z_students.domain.models.Announcement
 import com.zkrallah.z_students.domain.models.Class
+import com.zkrallah.z_students.domain.models.Task
 import com.zkrallah.z_students.domain.models.User
 import com.zkrallah.z_students.domain.repositories.ClassRepository
 import com.zkrallah.z_students.domain.response.ApiResponse
@@ -53,6 +54,24 @@ class ClassRepositoryImpl(
                 null,
                 headers
             )
+
+        return apiResponse?.body
+    }
+
+    override suspend fun getClassTasks(classId: Long): ApiResponse<List<Task>?>? {
+        val token = dataStore.getToken()
+        val headers = listOf(
+            Header("Authorization", "Bearer $token")
+        )
+
+        val apiResponse =
+            zHttpClient.get<ApiResponse<List<Task>?>>(
+                "api/classes/$classId/tasks",
+                null,
+                headers
+            )
+
+        Log.d("TasksScreen", "getClassTasks: $apiResponse")
 
         return apiResponse?.body
     }

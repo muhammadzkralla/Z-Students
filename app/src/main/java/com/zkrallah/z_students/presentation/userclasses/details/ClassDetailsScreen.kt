@@ -47,6 +47,15 @@ fun ClassDetailsScreen(
         topBar = {
             TopAppBar(
                 title = { Text(text = className) },
+                navigationIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_back),
+                        contentDescription = "Person Icon",
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .clickable { navController.popBackStack() }
+                    )
+                },
                 actions = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_requests_filled),
@@ -98,14 +107,15 @@ fun ClassDetailsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-            ) {
+            ) { page ->
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    when (ClassTabs.entries[selectedTabIndex.value].text) {
-                        "Members" -> ClassMembersScreen(classId = classId)
-                        "Announcements" -> AnnouncementsScreen(classId = classId)
+                    when (page) {
+                        0 -> TasksScreen(classId = classId)
+                        1 -> AnnouncementsScreen(classId = classId)
+                        2 -> MembersScreen(classId = classId)
                     }
                 }
             }

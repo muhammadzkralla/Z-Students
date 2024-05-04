@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zkrallah.z_students.domain.models.Announcement
 import com.zkrallah.z_students.domain.models.Class
+import com.zkrallah.z_students.domain.models.Task
 import com.zkrallah.z_students.domain.models.User
 import com.zkrallah.z_students.domain.repositories.ClassRepository
 import com.zkrallah.z_students.domain.response.ApiResponse
@@ -26,6 +27,9 @@ class UserClassesViewModel @Inject constructor(
     private val _classAnnouncementsStatus: MutableStateFlow<ApiResponse<List<Announcement>?>?> = MutableStateFlow(null)
     val classAnnouncementsStatus: StateFlow<ApiResponse<List<Announcement>?>?> = _classAnnouncementsStatus
 
+    private val _classTasksStatus: MutableStateFlow<ApiResponse<List<Task>?>?> = MutableStateFlow(null)
+    val classTasksStatus: StateFlow<ApiResponse<List<Task>?>?> = _classTasksStatus
+
     fun getUserClasses() {
         viewModelScope.launch {
             _getUserClassesStatus.emit(classRepository.getUserClasses())
@@ -41,6 +45,12 @@ class UserClassesViewModel @Inject constructor(
     fun getClassAnnouncements(classId: Long) {
         viewModelScope.launch {
             _classAnnouncementsStatus.emit(classRepository.getClassAnnouncements(classId))
+        }
+    }
+
+    fun getClassTasks(classId: Long) {
+        viewModelScope.launch {
+            _classTasksStatus.emit(classRepository.getClassTasks(classId))
         }
     }
 }
