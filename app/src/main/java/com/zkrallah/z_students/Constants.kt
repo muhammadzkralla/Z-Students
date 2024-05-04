@@ -13,16 +13,16 @@ import com.zkrallah.z_students.domain.models.BottomNavItem
 
 val SCREENS = listOf(
     BottomNavItem(
-        "Browse",
-        "Browse",
-        selectedIcon = R.drawable.ic_home_filled,
-        unSelectedIcon = R.drawable.ic_home_outlined
-    ),
-    BottomNavItem(
         "Classes",
         "Classes",
         selectedIcon = R.drawable.ic_groups_filled,
         unSelectedIcon = R.drawable.ic_groups_outlined
+    ),
+    BottomNavItem(
+        "Browse",
+        "Browse",
+        selectedIcon = R.drawable.ic_browse_filled,
+        unSelectedIcon = R.drawable.ic_browse_outlined
     ),
     BottomNavItem(
         "Requests",

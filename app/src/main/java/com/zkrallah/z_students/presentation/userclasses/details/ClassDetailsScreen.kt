@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -105,7 +103,10 @@ fun ClassDetailsScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = ClassTabs.entries[selectedTabIndex.value].text)
+                    when (ClassTabs.entries[selectedTabIndex.value].text) {
+                        "Members" -> ClassMembersScreen(classId = classId)
+                        "Announcements" -> AnnouncementsScreen(classId = classId)
+                    }
                 }
             }
         }

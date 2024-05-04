@@ -26,7 +26,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -207,7 +206,7 @@ fun UserScreen(
             ) {
                 if (img.value.isEmpty()) {
                     Image(
-                        painter = painterResource(R.drawable.ic_launcher_background),
+                        painter = painterResource(R.drawable.ic_person),
                         contentDescription = "User Photo",
                         modifier = Modifier
                             .size(150.dp)
@@ -219,9 +218,8 @@ fun UserScreen(
                         data = img.value,
                         contentDescription = null, // Provide content description as per your needs
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .clip(shape = MaterialTheme.shapes.medium),
+                            .size(150.dp)
+                            .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
                 }
