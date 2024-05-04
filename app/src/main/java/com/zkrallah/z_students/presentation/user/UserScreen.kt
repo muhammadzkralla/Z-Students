@@ -69,7 +69,9 @@ fun UserScreen(
     userViewModel: UserViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    userViewModel.getCurrentUser()
+    LaunchedEffect(Unit) {
+        userViewModel.getCurrentUser()
+    }
 
     val getContent =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->

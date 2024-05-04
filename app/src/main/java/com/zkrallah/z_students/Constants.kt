@@ -2,37 +2,43 @@ package com.zkrallah.z_students
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Home
 import com.zkrallah.z_students.domain.models.BottomNavItem
 
 val SCREENS = listOf(
     BottomNavItem(
         "Browse",
-        "browse",
-        icon = Icons.Default.Home
+        "Browse",
+        selectedIcon = R.drawable.ic_home_filled,
+        unSelectedIcon = R.drawable.ic_home_outlined
     ),
     BottomNavItem(
-        "Request",
-        "request",
-        icon = Icons.Default.Email
+        "Classes",
+        "Classes",
+        selectedIcon = R.drawable.ic_groups_filled,
+        unSelectedIcon = R.drawable.ic_groups_outlined
+    ),
+    BottomNavItem(
+        "Requests",
+        "Requests",
+        selectedIcon = R.drawable.ic_requests_filled,
+        unSelectedIcon = R.drawable.ic_request_outlined
     ),
     BottomNavItem(
         "User",
-        "user",
-        icon = Icons.Default.AccountCircle
+        "User",
+        selectedIcon = R.drawable.ic_account_filled,
+        unSelectedIcon = R.drawable.ic_account_outlined
     )
 )
 
 val ROUTES = listOf(
     "Browse",
-    "User",
-    "Request"
+    "Classes",
+    "Requests",
+    "User"
 )
 
-const val BASE_URL = "http://192.168.1.6:8080"
+const val BASE_URL = "http://192.168.1.11:8080"
 const val LOGIN_ENDPOINT = "api/auth/login"
 const val REGISTER_STUDENT_ENDPOINT = "api/auth/student/signup"
 const val REGISTER_TEACHER_ENDPOINT = "api/auth/teacher/signup"
