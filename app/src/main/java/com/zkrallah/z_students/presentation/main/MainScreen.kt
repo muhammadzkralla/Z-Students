@@ -44,6 +44,7 @@ import com.zkrallah.z_students.presentation.reset.ConfirmResetScreen
 import com.zkrallah.z_students.presentation.reset.ResetPasswordScreen
 import com.zkrallah.z_students.presentation.user.UserScreen
 import com.zkrallah.z_students.presentation.userclasses.UserClassesScreen
+import com.zkrallah.z_students.presentation.userclasses.details.ClassDetailsScreen
 import com.zkrallah.z_students.presentation.verification.VerificationScreen
 import kotlinx.coroutines.runBlocking
 
@@ -149,6 +150,25 @@ fun Navigation(
         composable(route = "Classes") {
             UserClassesScreen(
                 navController = navController
+            )
+        }
+        composable(
+            route = "ClassDetails/{classId}/{className}",
+            arguments = listOf(
+                navArgument("classId") {
+                    type = NavType.LongType
+                },
+                navArgument("className") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val classId = backStackEntry.arguments?.getLong("classId")
+            val className = backStackEntry.arguments?.getString("className")
+            ClassDetailsScreen(
+                navController = navController,
+                classId = classId!!,
+                className = className!!
             )
         }
         composable(route = "Requests") {

@@ -1,6 +1,5 @@
 package com.zkrallah.z_students.presentation.userclasses
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -61,7 +60,7 @@ fun UserClassesScreen(
                             description = item.description!!,
                             numberOfMembers = item.numberOfUsers!!
                         ) {
-                            showToast(context, "Clicked ${item.name}")
+                            navController.navigate("ClassDetails/${item.id}/${item.name}")
                         }
                     }
                 }

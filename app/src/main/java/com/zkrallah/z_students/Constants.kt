@@ -2,6 +2,13 @@ package com.zkrallah.z_students
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.zkrallah.z_students.domain.models.BottomNavItem
 
 val SCREENS = listOf(
@@ -37,6 +44,28 @@ val ROUTES = listOf(
     "Requests",
     "User"
 )
+
+enum class ClassTabs(
+    val selectedIcon: Int,
+    val unselectedIcon: Int,
+    val text: String
+) {
+    Tasks(
+        unselectedIcon = R.drawable.ic_tasks_outlined,
+        selectedIcon = R.drawable.ic_tasks_filled,
+        text = "Tasks"
+    ),
+    Announcements(
+        unselectedIcon = R.drawable.ic_announcements_outlined,
+        selectedIcon = R.drawable.ic_announcements_filled,
+        text = "Announcements"
+    ),
+    Members(
+        unselectedIcon = R.drawable.ic_groups_outlined,
+        selectedIcon = R.drawable.ic_groups_filled,
+        text = "Members"
+    )
+}
 
 const val BASE_URL = "http://192.168.1.11:8080"
 const val LOGIN_ENDPOINT = "api/auth/login"
