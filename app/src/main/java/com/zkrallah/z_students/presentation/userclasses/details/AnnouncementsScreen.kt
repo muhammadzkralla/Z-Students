@@ -54,8 +54,8 @@ fun AnnouncementsScreen(
                 if (!classes.isNullOrEmpty()) {
                     items(classes) {item ->
                         AnnouncementCard(
-                            title = item.title!!,
-                            content = item.content!!
+                            title = item.title ?: "",
+                            content = item.content ?: ""
                         )
                     }
                 }

@@ -14,6 +14,8 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -22,12 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.zkrallah.z_students.ClassTabs
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.presentation.intro.rememberPagerState
+import com.zkrallah.z_students.presentation.userclasses.UserClassesViewModel
 import com.zkrallah.z_students.showToast
 import kotlinx.coroutines.launch
 
@@ -35,10 +39,17 @@ import kotlinx.coroutines.launch
 @Composable
 fun ClassDetailsScreen(
     navController: NavController,
+    userClassesViewModel: UserClassesViewModel = hiltViewModel(),
     classId: Long,
     className: String
 ) {
     val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        userClassesViewModel.getUserRole()
+    }
+
+    val userRoleStatus = userClassesViewModel.userRoleStatus.collectAsState()
+
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = ClassTabs.entries.size)
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
@@ -50,22 +61,24 @@ fun ClassDetailsScreen(
                 navigationIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_back),
-                        contentDescription = "Person Icon",
+                        contentDescription = "Back Button",
                         modifier = Modifier
                             .padding(16.dp)
                             .clickable { navController.popBackStack() }
                     )
                 },
                 actions = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_requests_filled),
-                        contentDescription = "Person Icon",
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .clickable {
-                                showToast(context, "clicked")
-                            }
-                    )
+                    if (userRoleStatus.value != "STUDENT") {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_requests_filled),
+                            contentDescription = "Class Requests",
+                            modifier = Modifier
+                                .padding(end = 16.dp)
+                                .clickable {
+                                    navController.navigate("ClassRequests/$classId/$className")
+                                }
+                        )
+                    }
                 }
             )
         }

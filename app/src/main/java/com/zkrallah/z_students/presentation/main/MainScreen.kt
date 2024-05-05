@@ -46,6 +46,7 @@ import com.zkrallah.z_students.presentation.reset.ResetPasswordScreen
 import com.zkrallah.z_students.presentation.user.UserScreen
 import com.zkrallah.z_students.presentation.userclasses.UserClassesScreen
 import com.zkrallah.z_students.presentation.userclasses.details.ClassDetailsScreen
+import com.zkrallah.z_students.presentation.userclasses.details.RequestsScreen
 import com.zkrallah.z_students.presentation.verification.VerificationScreen
 import kotlinx.coroutines.runBlocking
 
@@ -176,6 +177,25 @@ fun Navigation(
                 className = className!!
             )
         }
+        composable(
+            route = "ClassRequests/{classId}/{className}",
+            arguments = listOf(
+                navArgument("classId") {
+                    type = NavType.LongType
+                },
+                navArgument("className") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val classId = backStackEntry.arguments?.getLong("classId")
+            val className = backStackEntry.arguments?.getString("className")
+            RequestsScreen(
+                navController = navController,
+                classId = classId!!,
+                className =  className!!
+            )
+        }
         composable(route = "Requests") {
             RequestScreen()
         }
@@ -198,7 +218,8 @@ fun BottomNavigationBar(
 
     BottomNavigation(
         modifier = modifier,
-        elevation = 5.dp
+        elevation = 5.dp,
+        backgroundColor = MaterialTheme.colorScheme.primaryContainer
     ) {
 
         items.forEach { item ->

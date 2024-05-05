@@ -61,8 +61,8 @@ fun MembersScreen(
                             firstName = item.firstName ?: "",
                             lastName = item.lastName ?: "",
                             role = role ?: "",
-                            email = item.email!!,
-                            imageUrl = item.imageUrl!!
+                            email = item.email ?: "",
+                            imageUrl = item.imageUrl ?: ""
                         )
                     }
                 }

@@ -4,6 +4,7 @@ import android.util.Log
 import com.zkrallah.z_students.data.dataStore.DataStore
 import com.zkrallah.z_students.domain.models.Announcement
 import com.zkrallah.z_students.domain.models.Class
+import com.zkrallah.z_students.domain.models.Request
 import com.zkrallah.z_students.domain.models.Task
 import com.zkrallah.z_students.domain.models.User
 import com.zkrallah.z_students.domain.repositories.ClassRepository
@@ -72,6 +73,59 @@ class ClassRepositoryImpl(
             )
 
         Log.d("TasksScreen", "getClassTasks: $apiResponse")
+
+        return apiResponse?.body
+    }
+
+    override suspend fun getUserRole(): String {
+        return dataStore.getUserModel().authorities?.get(0)?.name ?: "STUDENT"
+    }
+
+    override suspend fun getClassRequests(classId: Long): ApiResponse<List<Request>?>? {
+        val token = dataStore.getToken()
+        val headers = listOf(
+            Header("Authorization", "Bearer $token")
+        )
+
+        val apiResponse = zHttpClient.get<ApiResponse<List<Request>?>>(
+            "api/classes/$classId/requests",
+            null,
+            headers
+        )
+
+        return apiResponse?.body
+    }
+
+    override suspend fun approveRequest(requestId: Long): ApiResponse<Request?>? {
+        val token = dataStore.getToken()
+        val headers = listOf(
+            Header("Authorization", "Bearer $token")
+        )
+
+        val apiResponse =
+            zHttpClient.put<ApiResponse<Request?>>(
+                "api/admin/approve-request/$requestId",
+                Unit,
+                null,
+                headers
+            )
+
+        return apiResponse?.body
+    }
+
+    override suspend fun declineRequest(requestId: Long): ApiResponse<Request?>? {
+        val token = dataStore.getToken()
+        val headers = listOf(
+            Header("Authorization", "Bearer $token")
+        )
+
+        val apiResponse =
+            zHttpClient.put<ApiResponse<Request?>>(
+                "api/admin/decline-request/$requestId",
+                Unit,
+                null,
+                headers
+            )
 
         return apiResponse?.body
     }
