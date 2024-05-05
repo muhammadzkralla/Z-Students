@@ -20,7 +20,7 @@ class OnBoardingViewModel @Inject constructor(
         val isOnboardingDone = mainRepository.getOnBoardingDone()
         val isLoggedIn = mainRepository.getLoggedInDone()
         if (isOnboardingDone) {
-            if (isLoggedIn) _startingDestination.emit("Browse")
+            if (isLoggedIn) _startingDestination.emit("Classes")
             else _startingDestination.emit("Login")
         }
     }

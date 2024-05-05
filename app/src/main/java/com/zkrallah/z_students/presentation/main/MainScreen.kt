@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -44,6 +45,8 @@ import com.zkrallah.z_students.presentation.reset.ConfirmResetScreen
 import com.zkrallah.z_students.presentation.reset.ResetPasswordScreen
 import com.zkrallah.z_students.presentation.user.UserScreen
 import com.zkrallah.z_students.presentation.userclasses.UserClassesScreen
+import com.zkrallah.z_students.presentation.userclasses.details.ClassDetailsScreen
+import com.zkrallah.z_students.presentation.userclasses.details.RequestsScreen
 import com.zkrallah.z_students.presentation.verification.VerificationScreen
 import kotlinx.coroutines.runBlocking
 
@@ -72,7 +75,11 @@ fun SetupNavigation(startingScreen: String) {
                         navController = navController,
                         onItemClick = {
                             navController.navigate(it.route) {
-                                popUpTo(0)
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+
+                                launchSingleTop = true
                             }
                         }
                     )
@@ -151,6 +158,44 @@ fun Navigation(
                 navController = navController
             )
         }
+        composable(
+            route = "ClassDetails/{classId}/{className}",
+            arguments = listOf(
+                navArgument("classId") {
+                    type = NavType.LongType
+                },
+                navArgument("className") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val classId = backStackEntry.arguments?.getLong("classId")
+            val className = backStackEntry.arguments?.getString("className")
+            ClassDetailsScreen(
+                navController = navController,
+                classId = classId!!,
+                className = className!!
+            )
+        }
+        composable(
+            route = "ClassRequests/{classId}/{className}",
+            arguments = listOf(
+                navArgument("classId") {
+                    type = NavType.LongType
+                },
+                navArgument("className") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val classId = backStackEntry.arguments?.getLong("classId")
+            val className = backStackEntry.arguments?.getString("className")
+            RequestsScreen(
+                navController = navController,
+                classId = classId!!,
+                className =  className!!
+            )
+        }
         composable(route = "Requests") {
             RequestScreen()
         }
@@ -173,7 +218,8 @@ fun BottomNavigationBar(
 
     BottomNavigation(
         modifier = modifier,
-        elevation = 5.dp
+        elevation = 5.dp,
+        backgroundColor = MaterialTheme.colorScheme.primaryContainer
     ) {
 
         items.forEach { item ->

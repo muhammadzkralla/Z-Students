@@ -33,7 +33,7 @@ class BrowseRepositoryImpl(
 
         val apiResponse =
             zHttpClient.post<ApiResponse<Request?>>(
-                "api/students/request/$userId/to/$classId",
+                "api/users/request/$userId/to/$classId",
                 Unit,
                 null,
                 headers
