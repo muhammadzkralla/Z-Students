@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -81,6 +84,17 @@ fun ClassDetailsScreen(
                     }
                 }
             )
+        }, floatingActionButton = {
+            if (userRoleStatus.value != "STUDENT") {
+                FloatingActionButton(
+                    onClick = {
+                        showToast(context, "Add Task")
+                    },
+                    content = {
+                        Icon(imageVector = Icons.Rounded.Add, contentDescription = "Post or Upload")
+                    }
+                )
+            }
         }
     ) {
         Column(
