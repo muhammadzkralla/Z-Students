@@ -28,12 +28,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 
 @Composable
-fun AddAnnouncementDialog(
+fun AddSourceDialog(
     onDismissRequest: () -> Unit,
-    onConfirmation: (String, String) -> Unit,
+    onConfirmation: (String) -> Unit,
 ) {
-    val titleState = remember { mutableStateOf(TextFieldValue()) }
-    val contentState = remember { mutableStateOf(TextFieldValue()) }
+    val sourceState = remember { mutableStateOf(TextFieldValue()) }
 
     Dialog(
         onDismissRequest = {
@@ -59,37 +58,16 @@ fun AddAnnouncementDialog(
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Add Announcement")
+                    Text(text = "Add Source")
                     Spacer(modifier = Modifier.height(8.dp))
 
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-                        value = titleState.value,
-                        onValueChange = { titleState.value = it },
-                        label = { Text("Title...") },
+                        value = sourceState.value,
+                        onValueChange = { sourceState.value = it },
+                        label = { Text("Source...") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text
-                        ),
-                        colors = TextFieldDefaults.colors(
-                            disabledTextColor = Color.Gray,
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Gray,
-                            focusedIndicatorColor = Color.Red,
-                            unfocusedIndicatorColor = Color.Black,
-                            disabledIndicatorColor = Color.Transparent
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    TextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = contentState.value,
-                        onValueChange = { contentState.value = it },
-                        label = { Text("Content...") },
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Decimal
                         ),
                         colors = TextFieldDefaults.colors(
                             disabledTextColor = Color.Gray,
@@ -118,8 +96,7 @@ fun AddAnnouncementDialog(
                         TextButton(
                             onClick = {
                                 onConfirmation(
-                                    titleState.value.text,
-                                    contentState.value.text
+                                    sourceState.value.text
                                 )
                             },
                             modifier = Modifier.padding(8.dp),
@@ -131,4 +108,5 @@ fun AddAnnouncementDialog(
             }
         }
     }
+
 }

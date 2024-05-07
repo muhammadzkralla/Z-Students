@@ -185,7 +185,7 @@ fun ClassDetailsScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     when (page) {
-                        0 -> TasksScreen(classId = classId)
+                        0 -> TasksScreen(navController = navController, classId = classId)
                         1 -> AnnouncementsScreen(classId = classId)
                         2 -> MembersScreen(classId = classId)
                     }

@@ -6,12 +6,14 @@ import com.zkrallah.z_students.data.repositories.BrowseRepositoryImpl
 import com.zkrallah.z_students.data.repositories.ClassRepositoryImpl
 import com.zkrallah.z_students.data.repositories.MainRepositoryImpl
 import com.zkrallah.z_students.data.repositories.RequestRepositoryImpl
+import com.zkrallah.z_students.data.repositories.TaskRepositoryImpl
 import com.zkrallah.z_students.data.repositories.UserRepositoryImpl
 import com.zkrallah.z_students.domain.repositories.AuthRepository
 import com.zkrallah.z_students.domain.repositories.BrowseRepository
 import com.zkrallah.z_students.domain.repositories.ClassRepository
 import com.zkrallah.z_students.domain.repositories.MainRepository
 import com.zkrallah.z_students.domain.repositories.RequestsRepository
+import com.zkrallah.z_students.domain.repositories.TaskRepository
 import com.zkrallah.z_students.domain.repositories.UserRepository
 import com.zkrallah.zhttp.ZHttpClient
 import dagger.Module
@@ -76,5 +78,14 @@ object RepositoriesModule {
         dataStore: DataStore
     ): ClassRepository {
         return ClassRepositoryImpl(zHttpClient, dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTaskRepository(
+        zHttpClient: ZHttpClient,
+        dataStore: DataStore
+    ): TaskRepository {
+        return TaskRepositoryImpl(zHttpClient, dataStore)
     }
 }
