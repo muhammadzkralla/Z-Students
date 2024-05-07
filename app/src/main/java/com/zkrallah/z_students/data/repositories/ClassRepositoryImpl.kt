@@ -2,6 +2,7 @@ package com.zkrallah.z_students.data.repositories
 
 import android.util.Log
 import com.zkrallah.z_students.data.dataStore.DataStore
+import com.zkrallah.z_students.domain.dto.TaskDto
 import com.zkrallah.z_students.domain.models.Announcement
 import com.zkrallah.z_students.domain.models.Class
 import com.zkrallah.z_students.domain.models.Request
@@ -123,6 +124,35 @@ class ClassRepositoryImpl(
             zHttpClient.put<ApiResponse<Request?>>(
                 "api/admin/decline-request/$requestId",
                 Unit,
+                null,
+                headers
+            )
+
+        return apiResponse?.body
+    }
+
+    override suspend fun addTask(
+        classId: Long,
+        title: String,
+        desc: String,
+        due: String
+    ): ApiResponse<Task?>? {
+        val token = dataStore.getToken()
+        val headers = listOf(
+            Header("Authorization", "Bearer $token"),
+            Header("Content-Type", "application/json")
+        )
+
+        val taskDto = TaskDto(
+            title,
+            desc,
+            due
+        )
+
+        val apiResponse =
+            zHttpClient.post<ApiResponse<Task?>>(
+                "api/teachers/class/$classId/create-task",
+                taskDto,
                 null,
                 headers
             )

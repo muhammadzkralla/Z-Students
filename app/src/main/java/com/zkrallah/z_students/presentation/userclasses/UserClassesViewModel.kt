@@ -19,26 +19,36 @@ import javax.inject.Inject
 class UserClassesViewModel @Inject constructor(
     private val classRepository: ClassRepository
 ) : ViewModel() {
-    private val _getUserClassesStatus: MutableStateFlow<ApiResponse<List<Class>?>?> = MutableStateFlow(null)
+    private val _getUserClassesStatus: MutableStateFlow<ApiResponse<List<Class>?>?> =
+        MutableStateFlow(null)
     val getUserClassesStatus: StateFlow<ApiResponse<List<Class>?>?> = _getUserClassesStatus
 
-    private val _classMembersStatus: MutableStateFlow<ApiResponse<List<User>?>?> = MutableStateFlow(null)
+    private val _classMembersStatus: MutableStateFlow<ApiResponse<List<User>?>?> =
+        MutableStateFlow(null)
     val classMembersStatus: StateFlow<ApiResponse<List<User>?>?> = _classMembersStatus
 
-    private val _classAnnouncementsStatus: MutableStateFlow<ApiResponse<List<Announcement>?>?> = MutableStateFlow(null)
-    val classAnnouncementsStatus: StateFlow<ApiResponse<List<Announcement>?>?> = _classAnnouncementsStatus
+    private val _classAnnouncementsStatus: MutableStateFlow<ApiResponse<List<Announcement>?>?> =
+        MutableStateFlow(null)
+    val classAnnouncementsStatus: StateFlow<ApiResponse<List<Announcement>?>?> =
+        _classAnnouncementsStatus
 
-    private val _classTasksStatus: MutableStateFlow<ApiResponse<List<Task>?>?> = MutableStateFlow(null)
+    private val _classTasksStatus: MutableStateFlow<ApiResponse<List<Task>?>?> =
+        MutableStateFlow(null)
     val classTasksStatus: StateFlow<ApiResponse<List<Task>?>?> = _classTasksStatus
 
     private val _userRoleStatus: MutableStateFlow<String> = MutableStateFlow("STUDENT")
     val userRoleStatus: StateFlow<String> = _userRoleStatus
 
-    private val _classRequestsStatus: MutableStateFlow<ApiResponse<List<Request>?>?> = MutableStateFlow(null)
+    private val _classRequestsStatus: MutableStateFlow<ApiResponse<List<Request>?>?> =
+        MutableStateFlow(null)
     val classRequestsStatus: StateFlow<ApiResponse<List<Request>?>?> = _classRequestsStatus
 
-    private val _requestResponseStatus: MutableStateFlow<ApiResponse<Request?>?> = MutableStateFlow(null)
+    private val _requestResponseStatus: MutableStateFlow<ApiResponse<Request?>?> =
+        MutableStateFlow(null)
     val requestResponseStatus: StateFlow<ApiResponse<Request?>?> = _requestResponseStatus
+
+    private val _addTaskStatus: MutableStateFlow<ApiResponse<Task?>?> = MutableStateFlow(null)
+    val addTaskStatus: StateFlow<ApiResponse<Task?>?> = _addTaskStatus
 
     fun getUserClasses() {
         viewModelScope.launch {
@@ -85,6 +95,12 @@ class UserClassesViewModel @Inject constructor(
     fun declineRequest(requestId: Long) {
         viewModelScope.launch {
             _requestResponseStatus.emit(classRepository.declineRequest(requestId))
+        }
+    }
+
+    fun addTask(classId: Long, title: String, desc: String, due: String) {
+        viewModelScope.launch {
+            _addTaskStatus.emit(classRepository.addTask(classId, title, desc, due))
         }
     }
 }

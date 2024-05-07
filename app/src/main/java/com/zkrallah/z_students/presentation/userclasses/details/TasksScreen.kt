@@ -49,10 +49,10 @@ fun TasksScreen(
     ) {
         classTasksStatus.value?.let { apiResponse ->
             if (apiResponse.success) {
-                val classes = apiResponse.data
+                val tasks = apiResponse.data?.reversed()
 
-                if (!classes.isNullOrEmpty()) {
-                    items(classes) {item ->
+                if (!tasks.isNullOrEmpty()) {
+                    items(tasks) {item ->
                         TaskCard(
                             title = item.title!!,
                             due = item.due!!,

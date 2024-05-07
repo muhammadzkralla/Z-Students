@@ -2,13 +2,6 @@ package com.zkrallah.z_students
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.zkrallah.z_students.domain.models.BottomNavItem
 
 val SCREENS = listOf(
@@ -67,7 +60,7 @@ enum class ClassTabs(
     )
 }
 
-const val BASE_URL = "http://192.168.1.2:8080"
+const val BASE_URL = "http://192.168.1.6:8080"
 const val LOGIN_ENDPOINT = "api/auth/login"
 const val REGISTER_STUDENT_ENDPOINT = "api/auth/student/signup"
 const val REGISTER_TEACHER_ENDPOINT = "api/auth/teacher/signup"

@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -33,6 +34,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.zkrallah.z_students.ClassTabs
 import com.zkrallah.z_students.R
+import com.zkrallah.z_students.presentation.dialog.AddTaskDialog
 import com.zkrallah.z_students.presentation.intro.rememberPagerState
 import com.zkrallah.z_students.presentation.userclasses.UserClassesViewModel
 import com.zkrallah.z_students.showToast
@@ -52,10 +54,18 @@ fun ClassDetailsScreen(
     }
 
     val userRoleStatus = userClassesViewModel.userRoleStatus.collectAsState()
+    val addTaskStatus = userClassesViewModel.addTaskStatus.collectAsState()
 
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = ClassTabs.entries.size)
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
+    val showDialog = remember { mutableStateOf(false) }
+
+    addTaskStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            userClassesViewModel.getClassTasks(classId)
+        } else showToast(context, apiResponse.message)
+    }
 
     Scaffold(
         topBar = {
@@ -88,7 +98,7 @@ fun ClassDetailsScreen(
             if (userRoleStatus.value != "STUDENT") {
                 FloatingActionButton(
                     onClick = {
-                        showToast(context, "Add Task")
+                        showDialog.value = true
                     },
                     content = {
                         Icon(imageVector = Icons.Rounded.Add, contentDescription = "Post or Upload")
@@ -144,6 +154,13 @@ fun ClassDetailsScreen(
                         1 -> AnnouncementsScreen(classId = classId)
                         2 -> MembersScreen(classId = classId)
                     }
+                }
+            }
+
+            if (showDialog.value) {
+                AddTaskDialog(onDismissRequest = { showDialog.value = false }) { title, desc, due ->
+                    userClassesViewModel.addTask(classId, title, desc, due)
+                    showDialog.value = false
                 }
             }
         }
