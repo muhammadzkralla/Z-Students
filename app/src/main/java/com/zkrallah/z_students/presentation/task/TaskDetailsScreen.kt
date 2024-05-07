@@ -85,7 +85,7 @@ fun TaskDetailsScreen(
                             contentDescription = "Submissions",
                             modifier = Modifier
                                 .padding(end = 16.dp)
-                                .clickable { showAddSourceDialog.value = true }
+                                .clickable { navController.navigate("TaskSubmissionsScreen/$taskId/$taskTitle") }
                         )
                     }
                 }
@@ -182,7 +182,7 @@ fun InitTask(innerPadding: PaddingValues, task: Task?) {
             modifier = Modifier.fillMaxSize()
         ) {
             if (!task.sources.isNullOrEmpty()) {
-                items(task.sources) {item ->
+                items(task.sources) { item ->
                     SourceItem(
                         source = item.source ?: ""
                     )

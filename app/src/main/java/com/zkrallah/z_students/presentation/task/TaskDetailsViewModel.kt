@@ -3,6 +3,7 @@ package com.zkrallah.z_students.presentation.task
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zkrallah.z_students.domain.models.Source
+import com.zkrallah.z_students.domain.models.Submission
 import com.zkrallah.z_students.domain.models.Task
 import com.zkrallah.z_students.domain.repositories.TaskRepository
 import com.zkrallah.z_students.domain.response.ApiResponse
@@ -25,6 +26,10 @@ class TaskDetailsViewModel @Inject constructor(
     private val _addSourceStatus: MutableStateFlow<ApiResponse<Source?>?> = MutableStateFlow(null)
     val addSourceStatus: StateFlow<ApiResponse<Source?>?> = _addSourceStatus
 
+    private val _getTaskSubmissionsStatus: MutableStateFlow<ApiResponse<List<Submission>?>?> =
+        MutableStateFlow(null)
+    val getTaskSubmissionsStatus: StateFlow<ApiResponse<List<Submission>?>?> = _getTaskSubmissionsStatus
+
     fun getUserRole() {
         viewModelScope.launch {
             _userRoleStatus.emit(taskRepository.getUserRole())
@@ -40,6 +45,12 @@ class TaskDetailsViewModel @Inject constructor(
     fun addSource(taskId: Long, source: String) {
         viewModelScope.launch {
             _addSourceStatus.emit(taskRepository.addSource(taskId, source))
+        }
+    }
+
+    fun getTaskSubmissions(taskId: Long) {
+        viewModelScope.launch {
+            _getTaskSubmissionsStatus.emit(taskRepository.getTaskSubmissions(taskId))
         }
     }
 }
