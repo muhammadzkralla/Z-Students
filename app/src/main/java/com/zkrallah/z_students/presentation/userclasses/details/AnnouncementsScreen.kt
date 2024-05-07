@@ -49,10 +49,10 @@ fun AnnouncementsScreen(
     ) {
         classAnnouncementsStatus.value?.let { apiResponse ->
             if (apiResponse.success) {
-                val classes = apiResponse.data
+                val announcements = apiResponse.data?.reversed()
 
-                if (!classes.isNullOrEmpty()) {
-                    items(classes) {item ->
+                if (!announcements.isNullOrEmpty()) {
+                    items(announcements) { item ->
                         AnnouncementCard(
                             title = item.title ?: "",
                             content = item.content ?: ""

@@ -24,5 +24,16 @@ interface ClassRepository {
 
     suspend fun declineRequest(requestId: Long): ApiResponse<Request?>?
 
-    suspend fun addTask(classId: Long, title: String, desc: String, due: String): ApiResponse<Task?>?
+    suspend fun addTask(
+        classId: Long,
+        title: String,
+        desc: String,
+        due: String
+    ): ApiResponse<Task?>?
+
+    suspend fun addAnnouncement(
+        classId: Long,
+        title: String,
+        content: String
+    ): ApiResponse<Announcement?>?
 }

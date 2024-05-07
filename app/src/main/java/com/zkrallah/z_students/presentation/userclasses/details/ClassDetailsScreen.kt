@@ -3,12 +3,15 @@ package com.zkrallah.z_students.presentation.userclasses.details
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -34,6 +37,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.zkrallah.z_students.ClassTabs
 import com.zkrallah.z_students.R
+import com.zkrallah.z_students.presentation.dialog.AddAnnouncementDialog
 import com.zkrallah.z_students.presentation.dialog.AddTaskDialog
 import com.zkrallah.z_students.presentation.intro.rememberPagerState
 import com.zkrallah.z_students.presentation.userclasses.UserClassesViewModel
@@ -55,15 +59,24 @@ fun ClassDetailsScreen(
 
     val userRoleStatus = userClassesViewModel.userRoleStatus.collectAsState()
     val addTaskStatus = userClassesViewModel.addTaskStatus.collectAsState()
+    val addAnnouncementStatus = userClassesViewModel.addAnnouncementStatus.collectAsState()
 
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = ClassTabs.entries.size)
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
-    val showDialog = remember { mutableStateOf(false) }
+
+    val showAddTaskDialog = remember { mutableStateOf(false) }
+    val showAddAnnouncementDialog = remember { mutableStateOf(false) }
 
     addTaskStatus.value?.let { apiResponse ->
         if (apiResponse.success) {
             userClassesViewModel.getClassTasks(classId)
+        } else showToast(context, apiResponse.message)
+    }
+
+    addAnnouncementStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            userClassesViewModel.getClassAnnouncements(classId)
         } else showToast(context, apiResponse.message)
     }
 
@@ -94,16 +107,38 @@ fun ClassDetailsScreen(
                     }
                 }
             )
-        }, floatingActionButton = {
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        floatingActionButton = {
             if (userRoleStatus.value != "STUDENT") {
-                FloatingActionButton(
-                    onClick = {
-                        showDialog.value = true
-                    },
-                    content = {
-                        Icon(imageVector = Icons.Rounded.Add, contentDescription = "Post or Upload")
-                    }
-                )
+                Column {
+
+                    FloatingActionButton(
+                        onClick = {
+                            showAddAnnouncementDialog.value = true
+                        },
+                        content = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_announcements_filled),
+                                contentDescription = "Post or Upload"
+                            )
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    FloatingActionButton(
+                        onClick = {
+                            showAddTaskDialog.value = true
+                        },
+                        content = {
+                            Icon(
+                                imageVector = Icons.Rounded.Add,
+                                contentDescription = "Post or Upload"
+                            )
+                        }
+                    )
+                }
             }
         }
     ) {
@@ -157,10 +192,21 @@ fun ClassDetailsScreen(
                 }
             }
 
-            if (showDialog.value) {
-                AddTaskDialog(onDismissRequest = { showDialog.value = false }) { title, desc, due ->
+            if (showAddTaskDialog.value) {
+                AddTaskDialog(onDismissRequest = {
+                    showAddTaskDialog.value = false
+                }) { title, desc, due ->
                     userClassesViewModel.addTask(classId, title, desc, due)
-                    showDialog.value = false
+                    showAddTaskDialog.value = false
+                }
+            }
+
+            if (showAddAnnouncementDialog.value) {
+                AddAnnouncementDialog(onDismissRequest = {
+                    showAddAnnouncementDialog.value = false
+                }) { title, content ->
+                    userClassesViewModel.addAnnouncement(classId, title, content)
+                    showAddAnnouncementDialog.value = false
                 }
             }
         }

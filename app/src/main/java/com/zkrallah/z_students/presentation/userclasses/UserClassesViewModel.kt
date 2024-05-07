@@ -50,6 +50,10 @@ class UserClassesViewModel @Inject constructor(
     private val _addTaskStatus: MutableStateFlow<ApiResponse<Task?>?> = MutableStateFlow(null)
     val addTaskStatus: StateFlow<ApiResponse<Task?>?> = _addTaskStatus
 
+    private val _addAnnouncementStatus: MutableStateFlow<ApiResponse<Announcement?>?> =
+        MutableStateFlow(null)
+    val addAnnouncementStatus: StateFlow<ApiResponse<Announcement?>?> = _addAnnouncementStatus
+
     fun getUserClasses() {
         viewModelScope.launch {
             _getUserClassesStatus.emit(classRepository.getUserClasses())
@@ -101,6 +105,12 @@ class UserClassesViewModel @Inject constructor(
     fun addTask(classId: Long, title: String, desc: String, due: String) {
         viewModelScope.launch {
             _addTaskStatus.emit(classRepository.addTask(classId, title, desc, due))
+        }
+    }
+
+    fun addAnnouncement(classId: Long, title: String, content: String) {
+        viewModelScope.launch {
+            _addAnnouncementStatus.emit(classRepository.addAnnouncement(classId, title, content))
         }
     }
 }

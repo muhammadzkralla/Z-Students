@@ -11,11 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -28,32 +23,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
-import com.maxkeppeler.sheets.calendar.CalendarDialog
-import com.maxkeppeler.sheets.calendar.models.CalendarConfig
-import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import com.maxkeppeler.sheets.calendar.models.CalendarStyle
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTaskDialog(
+fun AddAnnouncementDialog(
     onDismissRequest: () -> Unit,
-    onConfirmation: (String, String, String) -> Unit,
+    onConfirmation: (String, String) -> Unit,
 ) {
     val titleState = remember { mutableStateOf(TextFieldValue()) }
-    val descriptionState = remember { mutableStateOf(TextFieldValue()) }
-    val dueState = remember { mutableStateOf(TextFieldValue()) }
-
-    val selectedDate = remember { mutableStateOf<LocalDate?>(LocalDate.now().minusDays(3)) }
-    val calendarDialogState = rememberUseCaseState()
-    val reverseFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    val contentState = remember { mutableStateOf(TextFieldValue()) }
 
     Dialog(
         onDismissRequest = {
@@ -105,9 +85,9 @@ fun AddTaskDialog(
 
                     TextField(
                         modifier = Modifier.fillMaxWidth(),
-                        value = descriptionState.value,
-                        onValueChange = { descriptionState.value = it },
-                        label = { Text("Description...") },
+                        value = contentState.value,
+                        onValueChange = { contentState.value = it },
+                        label = { Text("Content...") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Decimal
                         ),
@@ -121,31 +101,6 @@ fun AddTaskDialog(
                             disabledIndicatorColor = Color.Transparent
                         )
                     )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TextField(
-                            modifier = Modifier.fillMaxWidth(0.5f),
-                            value = dueState.value,
-                            onValueChange = { dueState.value = it },
-                            label = { Text("Due..") },
-                            enabled = false
-                        )
-
-                        IconButton(
-                            onClick = { calendarDialogState.show() },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = "Chose DOB"
-                            )
-                        }
-                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -164,8 +119,7 @@ fun AddTaskDialog(
                             onClick = {
                                 onConfirmation(
                                     titleState.value.text,
-                                    descriptionState.value.text,
-                                    dueState.value.text
+                                    contentState.value.text
                                 )
                             },
                             modifier = Modifier.padding(8.dp),
@@ -178,30 +132,4 @@ fun AddTaskDialog(
         }
     }
 
-    CalendarDialog(
-        state = calendarDialogState,
-        config = CalendarConfig(
-            yearSelection = true,
-            monthSelection = true,
-            style = CalendarStyle.MONTH
-        ),
-        selection = CalendarSelection.Date(
-            selectedDate = selectedDate.value
-        ) { newDate ->
-            selectedDate.value = newDate
-
-            val date = LocalDate.parse(newDate.toString(), reverseFormatter)
-            val formattedDate = date.format(formatter)
-
-            dueState.value = TextFieldValue(formattedDate)
-        }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewAddTaskDialog() {
-    AddTaskDialog({}) { title, desc, due ->
-
-    }
 }

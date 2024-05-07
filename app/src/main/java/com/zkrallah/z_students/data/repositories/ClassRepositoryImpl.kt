@@ -2,6 +2,7 @@ package com.zkrallah.z_students.data.repositories
 
 import android.util.Log
 import com.zkrallah.z_students.data.dataStore.DataStore
+import com.zkrallah.z_students.domain.dto.AnnouncementDto
 import com.zkrallah.z_students.domain.dto.TaskDto
 import com.zkrallah.z_students.domain.models.Announcement
 import com.zkrallah.z_students.domain.models.Class
@@ -153,6 +154,30 @@ class ClassRepositoryImpl(
             zHttpClient.post<ApiResponse<Task?>>(
                 "api/teachers/class/$classId/create-task",
                 taskDto,
+                null,
+                headers
+            )
+
+        return apiResponse?.body
+    }
+
+    override suspend fun addAnnouncement(
+        classId: Long,
+        title: String,
+        content: String
+    ): ApiResponse<Announcement?>? {
+        val token = dataStore.getToken()
+        val headers = listOf(
+            Header("Authorization", "Bearer $token"),
+            Header("Content-Type", "application/json")
+        )
+
+        val announcementDto = AnnouncementDto(title, content)
+
+        val apiResponse =
+            zHttpClient.post<ApiResponse<Announcement?>>(
+                "api/teachers/create-announcement/$classId",
+                announcementDto,
                 null,
                 headers
             )
