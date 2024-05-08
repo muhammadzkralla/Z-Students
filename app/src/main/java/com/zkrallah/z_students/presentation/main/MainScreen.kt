@@ -43,6 +43,8 @@ import com.zkrallah.z_students.presentation.register.RegisterScreen
 import com.zkrallah.z_students.presentation.request.RequestScreen
 import com.zkrallah.z_students.presentation.reset.ConfirmResetScreen
 import com.zkrallah.z_students.presentation.reset.ResetPasswordScreen
+import com.zkrallah.z_students.presentation.task.TaskDetailsScreen
+import com.zkrallah.z_students.presentation.task.TaskSubmissionsScreen
 import com.zkrallah.z_students.presentation.user.UserScreen
 import com.zkrallah.z_students.presentation.userclasses.UserClassesScreen
 import com.zkrallah.z_students.presentation.userclasses.details.ClassDetailsScreen
@@ -193,7 +195,45 @@ fun Navigation(
             RequestsScreen(
                 navController = navController,
                 classId = classId!!,
-                className =  className!!
+                className = className!!
+            )
+        }
+        composable(
+            route = "TaskDetails/{taskId}/{taskName}",
+            arguments = listOf(
+                navArgument("taskId") {
+                    type = NavType.LongType
+                },
+                navArgument("taskName") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getLong("taskId")
+            val taskName = backStackEntry.arguments?.getString("taskName")
+            TaskDetailsScreen(
+                navController = navController,
+                taskId = taskId!!,
+                taskTitle = taskName!!
+            )
+        }
+        composable(
+            route = "TaskSubmissionsScreen/{taskId}/{taskName}",
+            arguments = listOf(
+                navArgument("taskId") {
+                    type = NavType.LongType
+                },
+                navArgument("taskName") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getLong("taskId")
+            val taskName = backStackEntry.arguments?.getString("taskName")
+            TaskSubmissionsScreen(
+                navController = navController,
+                taskId = taskId!!,
+                taskTitle = taskName!!
             )
         }
         composable(route = "Requests") {

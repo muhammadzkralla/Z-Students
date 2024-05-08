@@ -2,6 +2,7 @@ package com.zkrallah.z_students.presentation.userclasses.details
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,12 +29,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.presentation.userclasses.UserClassesViewModel
 import com.zkrallah.z_students.showToast
 
 @Composable
 fun TasksScreen(
+    navController: NavController,
     userClassesViewModel: UserClassesViewModel = hiltViewModel(),
     classId: Long
 ) {
@@ -57,7 +60,9 @@ fun TasksScreen(
                             title = item.title!!,
                             due = item.due!!,
                             sourcesCount = item.sources?.size ?: 0
-                        )
+                        ) {
+                            navController.navigate("TaskDetails/${item.id}/${item.title}")
+                        }
                     }
                 }
             } else showToast(context, apiResponse.message)
@@ -70,11 +75,13 @@ fun TasksScreen(
 fun TaskCard(
     title: String,
     due: String,
-    sourcesCount: Int
+    sourcesCount: Int,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .padding(16.dp)
             .background(color = Color.White, shape = RoundedCornerShape(12.dp))
             .padding(16.dp),
