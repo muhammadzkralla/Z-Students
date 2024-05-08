@@ -115,6 +115,8 @@ fun UserScreen(
                 }
             }
         } else showToast(context, apiResponse.message)
+
+        userViewModel.resetGetUserStatus()
     }
 
     updateUserStatus.value?.let { apiResponse ->
@@ -135,6 +137,7 @@ fun UserScreen(
                 }
             }
         } else showToast(context, apiResponse.message)
+        userViewModel.resetUpdateUserStatus()
     }
 
     uploadPhotoStatus.value?.let { apiResponse ->
@@ -147,6 +150,7 @@ fun UserScreen(
                 }
             }
         } else showToast(context, apiResponse.message)
+        userViewModel.resetUploadPhotoStatus()
     }
 
     CalendarDialog(

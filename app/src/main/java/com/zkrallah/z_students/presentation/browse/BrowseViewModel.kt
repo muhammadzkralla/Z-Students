@@ -33,4 +33,8 @@ class BrowseViewModel @Inject constructor(
             _submitRequestStatus.emit(browseRepository.submitRequest(classId))
         }
     }
+
+    fun resetSubmitRequestStatus() {
+        _submitRequestStatus.value = null
+    }
 }

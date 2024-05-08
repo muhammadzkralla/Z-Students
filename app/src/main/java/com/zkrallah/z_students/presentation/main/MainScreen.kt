@@ -83,6 +83,7 @@ fun SetupNavigation(startingScreen: String) {
                                 }
 
                                 launchSingleTop = true
+                                restoreState = true
                             }
                         }
                     )

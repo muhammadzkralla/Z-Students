@@ -48,4 +48,16 @@ class UserViewModel @Inject constructor(
             userRepository.logOut()
         }
     }
+
+    fun resetGetUserStatus() {
+        _getUserStatus.value = null
+    }
+
+    fun resetUpdateUserStatus() {
+        _updateUserStatus.value = null
+    }
+
+    fun resetUploadPhotoStatus() {
+        _uploadPhotoStatus.value = null
+    }
 }

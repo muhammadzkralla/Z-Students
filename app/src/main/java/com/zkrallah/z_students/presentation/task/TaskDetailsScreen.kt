@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -159,7 +158,7 @@ fun TaskDetailsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = innerPadding.calculateTopPadding(), start = 8.dp)
+                .padding(top = innerPadding.calculateTopPadding(), start = 16.dp)
         ) {
             Text(
                 text = "Due: ${task?.due}",
@@ -193,9 +192,7 @@ fun TaskDetailsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.4f)
+                modifier = Modifier.fillMaxSize()
             ) {
                 if (!task?.sources.isNullOrEmpty()) {
                     items(task?.sources!!) { item ->

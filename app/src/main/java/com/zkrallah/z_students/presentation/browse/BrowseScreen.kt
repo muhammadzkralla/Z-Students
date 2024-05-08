@@ -40,13 +40,8 @@ fun BrowseScreen(
     browseViewModel: BrowseViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        browseViewModel.getClasses()
-    }
-
-    val getClassesStatus = browseViewModel.getClassesStatus.collectAsState()
-
     LaunchedEffect(key1 = true) {
+        browseViewModel.getClasses()
         browseViewModel.submitRequestStatus.collectLatest { apiResponse ->
             apiResponse?.let {
                 if (apiResponse.success) {
@@ -55,9 +50,13 @@ fun BrowseScreen(
                         showToast(context, "Request to ${request.requestedClass!!.name} created!")
                     }
                 } else showToast(context, apiResponse.message)
+                browseViewModel.resetSubmitRequestStatus()
             }
         }
     }
+
+    val getClassesStatus = browseViewModel.getClassesStatus.collectAsState()
+
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
