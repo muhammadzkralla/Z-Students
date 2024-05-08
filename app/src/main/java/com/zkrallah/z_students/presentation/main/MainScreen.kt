@@ -45,6 +45,7 @@ import com.zkrallah.z_students.presentation.reset.ConfirmResetScreen
 import com.zkrallah.z_students.presentation.reset.ResetPasswordScreen
 import com.zkrallah.z_students.presentation.task.TaskDetailsScreen
 import com.zkrallah.z_students.presentation.task.TaskSubmissionsScreen
+import com.zkrallah.z_students.presentation.task.UserTaskSubmissionsScreen
 import com.zkrallah.z_students.presentation.user.UserScreen
 import com.zkrallah.z_students.presentation.userclasses.UserClassesScreen
 import com.zkrallah.z_students.presentation.userclasses.details.ClassDetailsScreen
@@ -234,6 +235,20 @@ fun Navigation(
                 navController = navController,
                 taskId = taskId!!,
                 taskTitle = taskName!!
+            )
+        }
+        composable(
+            route = "UserTaskSubmissions/{taskId}",
+            arguments = listOf(
+                navArgument("taskId") {
+                    type = NavType.LongType
+                }
+            )
+        ) { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getLong("taskId")
+            UserTaskSubmissionsScreen(
+                navController = navController,
+                taskId = taskId!!
             )
         }
         composable(route = "Requests") {

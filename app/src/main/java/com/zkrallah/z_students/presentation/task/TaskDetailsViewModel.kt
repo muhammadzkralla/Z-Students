@@ -35,6 +35,14 @@ class TaskDetailsViewModel @Inject constructor(
         MutableStateFlow(null)
     val updateSubmissionStatus: StateFlow<ApiResponse<Submission?>?> = _updateSubmissionStatus
 
+    private val _addSubmissionStatus: MutableStateFlow<ApiResponse<Submission?>?> = MutableStateFlow(null)
+    val addSubmissionStatus: StateFlow<ApiResponse<Submission?>?> = _addSubmissionStatus
+
+    private val _getUserTaskSubmissionsStatus: MutableStateFlow<ApiResponse<List<Submission>?>?> =
+        MutableStateFlow(null)
+    val getUserTaskSubmissionsStatus: StateFlow<ApiResponse<List<Submission>?>?> =
+        _getUserTaskSubmissionsStatus
+
     fun getUserRole() {
         viewModelScope.launch {
             _userRoleStatus.emit(taskRepository.getUserRole())
@@ -69,6 +77,18 @@ class TaskDetailsViewModel @Inject constructor(
                     additional
                 )
             )
+        }
+    }
+
+    fun addSubmission(taskId: Long, link: String, additional: String) {
+        viewModelScope.launch {
+            _addSubmissionStatus.emit(taskRepository.addSubmission(taskId, link, additional))
+        }
+    }
+
+    fun getUserTaskSubmissions(taskId: Long) {
+        viewModelScope.launch {
+            _getUserTaskSubmissionsStatus.emit(taskRepository.getUserTaskSubmissions(taskId))
         }
     }
 }

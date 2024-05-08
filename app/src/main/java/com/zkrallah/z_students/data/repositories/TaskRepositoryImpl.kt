@@ -66,8 +66,6 @@ class TaskRepositoryImpl(
         )
 
         return apiResponse?.body
-
-
     }
 
     override suspend fun updateSubmission(
@@ -91,6 +89,47 @@ class TaskRepositoryImpl(
                 null,
                 headers
             )
+
+        return apiResponse?.body
+    }
+
+    override suspend fun addSubmission(
+        taskId: Long,
+        link: String,
+        additional: String
+    ): ApiResponse<Submission?>? {
+        val token = dataStore.getToken()
+        val headers = listOf(
+            Header("Authorization", "Bearer $token"),
+            Header("Content-Type", "application/json")
+        )
+        val userId = dataStore.getUserModel().id
+
+        val submissionDto = SubmissionDto(link, additional, 0)
+
+        val apiResponse =
+            zHttpClient.post<ApiResponse<Submission?>>(
+                "api/students/submit/$userId/$taskId",
+                submissionDto,
+                null,
+                headers
+            )
+
+        return apiResponse?.body
+    }
+
+    override suspend fun getUserTaskSubmissions(taskId: Long): ApiResponse<List<Submission>?>? {
+        val token = dataStore.getToken()
+        val headers = listOf(
+            Header("Authorization", "Bearer $token")
+        )
+        val userId = dataStore.getUserModel().id
+
+        val apiResponse = zHttpClient.get<ApiResponse<List<Submission>?>>(
+            "api/students/submissions/$taskId/$userId",
+            null,
+            headers
+        )
 
         return apiResponse?.body
     }

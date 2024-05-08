@@ -3,8 +3,8 @@ package com.zkrallah.z_students.presentation.task
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,8 +25,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -37,7 +39,9 @@ import androidx.navigation.NavController
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.domain.models.Task
 import com.zkrallah.z_students.presentation.dialog.AddSourceDialog
+import com.zkrallah.z_students.presentation.dialog.AddSubmissionDialog
 import com.zkrallah.z_students.showToast
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,22 +52,32 @@ fun TaskDetailsScreen(
     taskTitle: String
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = true) {
         taskDetailsViewModel.getUserRole()
         taskDetailsViewModel.getTask(taskId)
+        taskDetailsViewModel.getUserTaskSubmissions(taskId)
+
+        taskDetailsViewModel.addSubmissionStatus.collectLatest { apiResponse ->
+            apiResponse?.let {
+                if (apiResponse.success) {
+                    showToast(context, "Submission Added!")
+                } else showToast(context, "Failed to Submit: ${apiResponse.message}")
+            }
+        }
+
+        taskDetailsViewModel.addSourceStatus.collectLatest { apiResponse ->
+            apiResponse?.let {
+                if (apiResponse.success) {
+                    showToast(context, "Source Added!")
+                } else showToast(context, apiResponse.message)
+            }
+        }
     }
 
     val userRoleStatus = taskDetailsViewModel.userRoleStatus.collectAsState()
-    val getTaskStatus = taskDetailsViewModel.getTaskStatus.collectAsState()
-    val addSourceStatus = taskDetailsViewModel.addSourceStatus.collectAsState()
 
     val showAddSourceDialog = remember { mutableStateOf(false) }
-
-    addSourceStatus.value?.let { apiResponse ->
-        if (apiResponse.success) {
-            taskDetailsViewModel.getTask(taskId)
-        } else showToast(context, apiResponse.message)
-    }
+    val showAddSubmissionDialog = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -87,6 +101,14 @@ fun TaskDetailsScreen(
                                 .padding(end = 16.dp)
                                 .clickable { navController.navigate("TaskSubmissionsScreen/$taskId/$taskTitle") }
                         )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_submissions),
+                            contentDescription = "Submissions",
+                            modifier = Modifier
+                                .padding(end = 16.dp)
+                                .clickable { navController.navigate("UserTaskSubmissions/$taskId") }
+                        )
                     }
                 }
             )
@@ -109,7 +131,7 @@ fun TaskDetailsScreen(
             } else {
                 FloatingActionButton(
                     onClick = {
-                        showToast(context, "Add Submission")
+                        showAddSubmissionDialog.value = true
                     },
                     content = {
                         Icon(
@@ -121,9 +143,67 @@ fun TaskDetailsScreen(
             }
         }
     ) { innerPadding ->
-        getTaskStatus.value?.let { apiResponse ->
-            if (apiResponse.success) {
-                InitTask(innerPadding, apiResponse.data)
+
+        var task by remember { mutableStateOf<Task?>(null) }
+
+        LaunchedEffect(key1 = true) {
+            taskDetailsViewModel.getTaskStatus.collectLatest { apiResponse ->
+                apiResponse?.let {
+                    if (apiResponse.success) {
+                        task = apiResponse.data
+                    } else showToast(context, apiResponse.message)
+                }
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = innerPadding.calculateTopPadding(), start = 8.dp)
+        ) {
+            Text(
+                text = "Due: ${task?.due}",
+                style = MaterialTheme.typography.headlineSmall,
+                color = Color.Red
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Description:",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.Black
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = task?.description ?: "",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Sources: ${task?.sources?.size ?: 0}",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.Black
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.4f)
+            ) {
+                if (!task?.sources.isNullOrEmpty()) {
+                    items(task?.sources!!) { item ->
+                        SourceItem(
+                            source = item.source ?: ""
+                        )
+                    }
+                }
             }
         }
 
@@ -135,62 +215,17 @@ fun TaskDetailsScreen(
                 showAddSourceDialog.value = false
             }
         }
-    }
 
-}
-
-@Composable
-fun InitTask(innerPadding: PaddingValues, task: Task?) {
-    if (task == null) return
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = innerPadding.calculateTopPadding(), start = 16.dp)
-    ) {
-        Text(
-            text = "Due: ${task.due}",
-            style = MaterialTheme.typography.headlineSmall,
-            color = Color.Red
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Description:",
-            style = MaterialTheme.typography.headlineMedium,
-            color = Color.Black
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = task.description ?: "",
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Sources:",
-            style = MaterialTheme.typography.headlineMedium,
-            color = Color.Black
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            if (!task.sources.isNullOrEmpty()) {
-                items(task.sources) { item ->
-                    SourceItem(
-                        source = item.source ?: ""
-                    )
-                }
+        if (showAddSubmissionDialog.value) {
+            AddSubmissionDialog(onDismissRequest = {
+                showAddSubmissionDialog.value = false
+            }) { link, additional ->
+                taskDetailsViewModel.addSubmission(taskId, link, additional)
+                showAddSubmissionDialog.value = false
             }
         }
-
     }
+
 }
 
 @Composable
