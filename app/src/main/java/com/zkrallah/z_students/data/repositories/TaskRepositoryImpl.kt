@@ -2,6 +2,7 @@ package com.zkrallah.z_students.data.repositories
 
 import com.zkrallah.z_students.data.dataStore.DataStore
 import com.zkrallah.z_students.domain.dto.SourceDto
+import com.zkrallah.z_students.domain.dto.SubmissionDto
 import com.zkrallah.z_students.domain.models.Source
 import com.zkrallah.z_students.domain.models.Submission
 import com.zkrallah.z_students.domain.models.Task
@@ -67,5 +68,30 @@ class TaskRepositoryImpl(
         return apiResponse?.body
 
 
+    }
+
+    override suspend fun updateSubmission(
+        submissionId: Long,
+        link: String,
+        grade: Int,
+        additional: String
+    ): ApiResponse<Submission?>? {
+        val token = dataStore.getToken()
+        val headers = listOf(
+            Header("Authorization", "Bearer $token"),
+            Header("Content-Type", "application/json")
+        )
+
+        val submissionDto = SubmissionDto(link, additional, grade)
+
+        val apiResponse =
+            zHttpClient.put<ApiResponse<Submission?>>(
+                "api/teachers/update-submission/$submissionId",
+                submissionDto,
+                null,
+                headers
+            )
+
+        return apiResponse?.body
     }
 }

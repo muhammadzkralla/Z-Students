@@ -18,6 +18,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zkrallah.z_students.R
+import com.zkrallah.z_students.domain.models.Submission
+import com.zkrallah.z_students.presentation.dialog.EditGradeDialog
 import com.zkrallah.z_students.showToast
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,6 +49,12 @@ fun TaskSubmissionsScreen(
     }
 
     val getTaskSubmissionsStatus = taskDetailsViewModel.getTaskSubmissionsStatus.collectAsState()
+    val updateSubmissionStatus = taskDetailsViewModel.updateSubmissionStatus.collectAsState()
+    var selectedSubmission by remember { mutableStateOf<Submission?>(null) }
+
+    fun showDialog(submission: Submission) {
+        selectedSubmission = submission
+    }
 
     Scaffold(
         topBar = {
@@ -75,20 +87,46 @@ fun TaskSubmissionsScreen(
                                 link = item.link ?: "",
                                 additional = item.additional ?: "",
                                 grade = item.grade ?: 0
-                            )
+                            ) {
+                                showDialog(item)
+                            }
                         }
                     }
                 } else showToast(context, apiResponse.message)
             }
         }
+
+        if (selectedSubmission != null) {
+            EditGradeDialog(
+                submission = selectedSubmission!!,
+                onDismissRequest = { selectedSubmission = null },
+                onConfirmation = { newGrade ->
+                    taskDetailsViewModel.updateSubmission(
+                        selectedSubmission!!.id!!,
+                        selectedSubmission!!.link!!,
+                        newGrade,
+                        selectedSubmission!!.additional!!
+                    )
+
+                    selectedSubmission = null
+                }
+            )
+        }
     }
 }
 
 @Composable
-fun SubmissionItem(email: String, link: String, additional: String, grade: Int) {
+fun SubmissionItem(
+    email: String,
+    link: String,
+    additional: String,
+    grade: Int,
+    onClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .padding(16.dp)
             .background(color = Color.White, shape = RoundedCornerShape(12.dp))
             .padding(16.dp),

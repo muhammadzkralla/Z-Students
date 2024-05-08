@@ -13,4 +13,11 @@ interface TaskRepository {
     suspend fun addSource(taskId: Long, source: String): ApiResponse<Source?>?
 
     suspend fun getTaskSubmissions(taskId: Long): ApiResponse<List<Submission>?>?
+
+    suspend fun updateSubmission(
+        submissionId: Long,
+        link: String,
+        grade: Int,
+        additional: String
+    ): ApiResponse<Submission?>?
 }
