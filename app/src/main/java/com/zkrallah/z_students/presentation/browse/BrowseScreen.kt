@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.showToast
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun BrowseScreen(
@@ -44,15 +45,18 @@ fun BrowseScreen(
     }
 
     val getClassesStatus = browseViewModel.getClassesStatus.collectAsState()
-    val submitRequestStatus = browseViewModel.submitRequestStatus.collectAsState()
 
-    submitRequestStatus.value?.let { apiResponse ->
-        if (apiResponse.success) {
-            val request = apiResponse.data
-            request?.let {
-                showToast(context, "Request to ${request.requestedClass!!.name} created!")
+    LaunchedEffect(key1 = true) {
+        browseViewModel.submitRequestStatus.collectLatest { apiResponse ->
+            apiResponse?.let {
+                if (apiResponse.success) {
+                    val request = apiResponse.data
+                    request?.let {
+                        showToast(context, "Request to ${request.requestedClass!!.name} created!")
+                    }
+                } else showToast(context, apiResponse.message)
             }
-        } else showToast(context, apiResponse.message)
+        }
     }
 
     LazyColumn(

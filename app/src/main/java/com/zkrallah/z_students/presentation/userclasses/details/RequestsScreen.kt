@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.presentation.userclasses.UserClassesViewModel
 import com.zkrallah.z_students.showToast
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,15 +50,21 @@ fun RequestsScreen(
     }
 
     val classRequestsStatus = userClassesViewModel.classRequestsStatus.collectAsState()
-    val requestResponseStatus = userClassesViewModel.requestResponseStatus.collectAsState()
 
-    requestResponseStatus.value?.let { apiResponse ->
-        if (apiResponse.success) {
-            val request = apiResponse.data
-            request?.let {
-                showToast(context, "Request from ${request.user!!.email} is ${request.status}}!")
+    LaunchedEffect(key1 = true) {
+        userClassesViewModel.requestResponseStatus.collectLatest { apiResponse ->
+            apiResponse?.let {
+                if (apiResponse.success) {
+                    val request = apiResponse.data
+                    request?.let {
+                        showToast(
+                            context,
+                            "Request from ${request.user!!.email} is ${request.status}}!"
+                        )
+                    }
+                } else showToast(context, apiResponse.message)
             }
-        } else showToast(context, apiResponse.message)
+        }
     }
     Scaffold(
         topBar = {
@@ -76,7 +83,8 @@ fun RequestsScreen(
         }
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
             classRequestsStatus.value?.let { apiResponse ->
@@ -84,7 +92,7 @@ fun RequestsScreen(
                     val requests = apiResponse.data?.filter { it.status == "WAITING" }
 
                     if (!requests.isNullOrEmpty()) {
-                        items(requests) {item ->
+                        items(requests) { item ->
                             RequestItemCard(
                                 email = item.user!!.email!!,
                                 timestamp = item.timestamp!!,
@@ -165,5 +173,10 @@ fun RequestItemCard(
 @Preview(showBackground = true)
 @Composable
 fun PreviewCardItem() {
-    RequestItemCard(email = "Title", timestamp = "2024-04-24 01:22:27.698", status = "APPROVED", {}, {})
+    RequestItemCard(
+        email = "Title",
+        timestamp = "2024-04-24 01:22:27.698",
+        status = "APPROVED",
+        {},
+        {})
 }
