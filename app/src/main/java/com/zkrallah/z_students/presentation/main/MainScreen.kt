@@ -1,28 +1,28 @@
 package com.zkrallah.z_students.presentation.main
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -34,7 +34,6 @@ import androidx.navigation.navArgument
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.zkrallah.z_students.ROUTES
 import com.zkrallah.z_students.SCREENS
-import com.zkrallah.z_students.domain.models.BottomNavItem
 import com.zkrallah.z_students.presentation.browse.BrowseScreen
 import com.zkrallah.z_students.presentation.intro.OnBoarding
 import com.zkrallah.z_students.presentation.intro.OnBoardingViewModel
@@ -69,24 +68,49 @@ fun SetupNavigation(startingScreen: String) {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
+        var navigationSelectedItem by remember {
+            mutableIntStateOf(0)
+        }
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         Scaffold(
             bottomBar = {
                 if (ROUTES.contains(navBackStackEntry?.destination?.route)) {
-                    BottomNavigationBar(items = SCREENS,
-                        navController = navController,
-                        onItemClick = {
-                            navController.navigate(it.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                    NavigationBar {
+                        SCREENS.forEachIndexed { index, item ->
+                            NavigationBarItem(
+                                selected = index == navigationSelectedItem,
+                                label = {
+                                    if (index == navigationSelectedItem) Text(item.name)
+                                },
+                                onClick = {
+                                    navigationSelectedItem = index
+                                    navController.navigate(item.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                },
+                                icon = {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        if (index == navigationSelectedItem) {
+                                            Icon(
+                                                painter = painterResource(id = item.selectedIcon),
+                                                contentDescription = "Log Out"
+                                            )
+                                        } else {
+                                            Icon(
+                                                painter = painterResource(id = item.unSelectedIcon),
+                                                contentDescription = "Log Out"
+                                            )
+                                        }
+                                    }
                                 }
-
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+                            )
                         }
-                    )
+                    }
                 }
             }
         ) { innerPadding ->
@@ -105,7 +129,22 @@ fun Navigation(
     startingScreen: String,
     navController: NavHostController
 ) {
-    NavHost(navController = navController, startDestination = startingScreen) {
+    NavHost(
+        navController = navController,
+        startDestination = startingScreen,
+        enterTransition = {
+            EnterTransition.None
+        },
+        exitTransition = {
+            ExitTransition.None
+        },
+        popExitTransition = {
+            ExitTransition.None
+        },
+        popEnterTransition = {
+            EnterTransition.None
+        }
+    ) {
         composable(route = "OnBoarding") {
             OnBoarding(
                 navController = navController
@@ -259,53 +298,6 @@ fun Navigation(
             UserScreen(
                 navController = navController
             )
-        }
-    }
-}
-
-@Composable
-fun BottomNavigationBar(
-    items: List<BottomNavItem>,
-    navController: NavController,
-    modifier: Modifier = Modifier,
-    onItemClick: (BottomNavItem) -> Unit,
-) {
-    val backStackEntry = navController.currentBackStackEntryAsState()
-
-    BottomNavigation(
-        modifier = modifier,
-        elevation = 5.dp,
-        backgroundColor = MaterialTheme.colorScheme.primaryContainer
-    ) {
-
-        items.forEach { item ->
-            val selected = item.route == backStackEntry.value?.destination?.route
-            BottomNavigationItem(
-                selected = selected,
-                onClick = { onItemClick(item) },
-                selectedContentColor = Color.Magenta,
-                unselectedContentColor = MaterialTheme.colorScheme.onBackground,
-                icon = {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        if (selected) {
-                            Icon(
-                                painter = painterResource(id = item.selectedIcon),
-                                contentDescription = "Log Out"
-                            )
-
-                            Text(
-                                text = item.name,
-                                textAlign = TextAlign.Center,
-                                fontSize = 10.sp
-                            )
-                        } else {
-                            Icon(
-                                painter = painterResource(id = item.unSelectedIcon),
-                                contentDescription = "Log Out"
-                            )
-                        }
-                    }
-                })
         }
     }
 }
