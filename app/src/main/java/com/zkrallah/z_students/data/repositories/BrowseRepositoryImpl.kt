@@ -1,6 +1,7 @@
 package com.zkrallah.z_students.data.repositories
 
 import com.zkrallah.z_students.data.dataStore.DataStore
+import com.zkrallah.z_students.domain.dto.ClassDto
 import com.zkrallah.z_students.domain.models.Class
 import com.zkrallah.z_students.domain.models.Request
 import com.zkrallah.z_students.domain.repositories.BrowseRepository
@@ -35,6 +36,26 @@ class BrowseRepositoryImpl(
             zHttpClient.post<ApiResponse<Request?>>(
                 "api/users/request/$userId/to/$classId",
                 Unit,
+                null,
+                headers
+            )
+
+        return apiResponse?.body
+    }
+
+    override suspend fun addClass(name: String, description: String): ApiResponse<Class?>? {
+        val token = dataStore.getToken()
+        val headers = listOf(
+            Header("Authorization", "Bearer $token"),
+            Header("Content-Type", "application/json")
+        )
+
+        val classDto = ClassDto(name, description)
+
+        val apiResponse =
+            zHttpClient.post<ApiResponse<Class?>>(
+                "api/admin/create-class",
+                classDto,
                 null,
                 headers
             )

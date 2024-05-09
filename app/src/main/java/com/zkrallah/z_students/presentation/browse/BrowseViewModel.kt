@@ -22,6 +22,9 @@ class BrowseViewModel @Inject constructor(
     private val _submitRequestStatus: MutableStateFlow<ApiResponse<Request?>?> = MutableStateFlow(null)
     val submitRequestStatus: StateFlow<ApiResponse<Request?>?> = _submitRequestStatus
 
+    private val _addClassStatus: MutableStateFlow<ApiResponse<Class?>?> = MutableStateFlow(null)
+    val addClassStatus: StateFlow<ApiResponse<Class?>?> = _addClassStatus
+
     fun getClasses() {
         viewModelScope.launch {
             _getClassesStatus.emit(browseRepository.getClasses())
@@ -36,5 +39,15 @@ class BrowseViewModel @Inject constructor(
 
     fun resetSubmitRequestStatus() {
         _submitRequestStatus.value = null
+    }
+
+    fun addClass(name: String, description: String) {
+        viewModelScope.launch {
+            _addClassStatus.emit(browseRepository.addClass(name, description))
+        }
+    }
+
+    fun resetAddClassStatus() {
+        _addClassStatus.value = null
     }
 }

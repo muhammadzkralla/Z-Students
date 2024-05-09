@@ -89,7 +89,7 @@ fun AddAnnouncementDialog(
                         onValueChange = { contentState.value = it },
                         label = { Text("Content...") },
                         keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Decimal
+                            keyboardType = KeyboardType.Text
                         ),
                         colors = TextFieldDefaults.colors(
                             disabledTextColor = Color.Gray,

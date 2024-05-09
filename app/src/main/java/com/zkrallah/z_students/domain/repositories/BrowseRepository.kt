@@ -8,4 +8,6 @@ interface BrowseRepository {
     suspend fun getClasses(): ApiResponse<List<Class>?>?
 
     suspend fun submitRequest(classId: Long): ApiResponse<Request?>?
+
+    suspend fun addClass(name: String, description: String): ApiResponse<Class?>?
 }

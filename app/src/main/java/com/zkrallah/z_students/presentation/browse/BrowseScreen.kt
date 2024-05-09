@@ -14,13 +14,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zkrallah.z_students.R
+import com.zkrallah.z_students.presentation.dialog.AddClassDialog
 import com.zkrallah.z_students.showToast
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun BrowseScreen(
@@ -42,41 +48,77 @@ fun BrowseScreen(
     val context = LocalContext.current
     LaunchedEffect(key1 = true) {
         browseViewModel.getClasses()
-        browseViewModel.submitRequestStatus.collectLatest { apiResponse ->
-            apiResponse?.let {
-                if (apiResponse.success) {
-                    val request = apiResponse.data
-                    request?.let {
-                        showToast(context, "Request to ${request.requestedClass!!.name} created!")
-                    }
-                } else showToast(context, apiResponse.message)
-                browseViewModel.resetSubmitRequestStatus()
-            }
-        }
     }
 
     val getClassesStatus = browseViewModel.getClassesStatus.collectAsState()
+    val addClassStatus = browseViewModel.addClassStatus.collectAsState()
+    val submitRequestStatus = browseViewModel.submitRequestStatus.collectAsState()
 
+    val showAddClassDialog = remember { mutableStateOf(false) }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        getClassesStatus.value?.let { apiResponse ->
-            if (apiResponse.success) {
-                val classes = apiResponse.data
+    submitRequestStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            val request = apiResponse.data
+            request?.let {
+                showToast(context, "Request to ${request.requestedClass!!.name} created!")
+            }
+        } else showToast(context, apiResponse.message)
+        browseViewModel.resetSubmitRequestStatus()
+    }
 
-                if (!classes.isNullOrEmpty()) {
-                    items(classes) {item ->
-                        ClassItemCard(
-                            className = item.name!!,
-                            description = item.description!!,
-                            numberOfMembers = item.numberOfUsers!!
-                        ) {
-                            browseViewModel.submitRequest(item.id!!)
+    addClassStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            showToast(context, "${apiResponse.data?.name} Created!")
+        } else showToast(context, "Failed to Create Class: ${apiResponse.message}")
+        browseViewModel.resetAddClassStatus()
+    }
+
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    showAddClassDialog.value = true
+                },
+                content = {
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = "Post or Upload"
+                    )
+                }
+            )
+        }
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            getClassesStatus.value?.let { apiResponse ->
+                if (apiResponse.success) {
+                    val classes = apiResponse.data
+
+                    if (!classes.isNullOrEmpty()) {
+                        items(classes) { item ->
+                            ClassItemCard(
+                                className = item.name!!,
+                                description = item.description!!,
+                                numberOfMembers = item.numberOfUsers!!
+                            ) {
+                                browseViewModel.submitRequest(item.id!!)
+                            }
                         }
                     }
-                }
-            } else showToast(context, apiResponse.message)
+                } else showToast(context, apiResponse.message)
+            }
+        }
+
+        if (showAddClassDialog.value) {
+            AddClassDialog(onDismissRequest = {
+                showAddClassDialog.value = false
+            }) { name, description ->
+                browseViewModel.addClass(name, description)
+                showAddClassDialog.value = false
+            }
         }
     }
 
