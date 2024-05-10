@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zkrallah.z_students.showToast
 import kotlinx.coroutines.delay
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +39,9 @@ fun RequestScreen(
     requestViewModel: RequestViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a")
 
 
     val getRequestsStatus = requestViewModel.getRequestsStatus.collectAsState()
@@ -58,9 +63,11 @@ fun RequestScreen(
 
                     if (!requests.isNullOrEmpty()) {
                         items(requests) { item ->
+                            val timestamp = LocalDateTime.parse(item.timestamp, formatter)
+                            val localDateTime = timestamp.format(outputFormatter)
                             RequestItemCard(
                                 className = item.requestedClass?.name!!,
-                                timestamp = item.timestamp!!,
+                                timestamp = "Requested At: $localDateTime",
                                 status = item.status!!
                             )
                         }

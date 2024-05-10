@@ -14,9 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -66,23 +63,20 @@ fun SetupNavigation(startingScreen: String) {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        var navigationSelectedItem by remember {
-            mutableIntStateOf(0)
-        }
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         Scaffold(
             bottomBar = {
                 if (ROUTES.contains(navBackStackEntry?.destination?.route)) {
                     NavigationBar {
-                        SCREENS.forEachIndexed { index, item ->
+                        SCREENS.forEach { item ->
+                            val selected = item.route == navBackStackEntry?.destination?.route
                             NavigationBarItem(
-                                selected = index == navigationSelectedItem,
+                                selected = selected,
                                 label = {
                                     Text(item.name)
                                 },
                                 onClick = {
-                                    navigationSelectedItem = index
                                     navController.navigate(item.route) {
                                         popUpTo(navController.graph.findStartDestination().id) {
                                             saveState = true
@@ -93,7 +87,7 @@ fun SetupNavigation(startingScreen: String) {
                                 },
                                 icon = {
                                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        if (index == navigationSelectedItem) {
+                                        if (selected) {
                                             Icon(
                                                 painter = painterResource(id = item.selectedIcon),
                                                 contentDescription = "Log Out"
