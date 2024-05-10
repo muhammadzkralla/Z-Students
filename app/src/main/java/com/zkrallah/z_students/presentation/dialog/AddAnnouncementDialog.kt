@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -51,7 +52,7 @@ fun AddAnnouncementDialog(
             Box(
                 modifier = Modifier
                     .padding(16.dp)
-                    .background(Color.White, RoundedCornerShape(8.dp))
+                    .background(color = MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp))
             ) {
                 Column(
                     modifier = Modifier

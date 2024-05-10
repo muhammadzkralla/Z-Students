@@ -34,6 +34,8 @@ import androidx.navigation.NavController
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.presentation.userclasses.UserClassesViewModel
 import com.zkrallah.z_students.showToast
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +49,9 @@ fun RequestsScreen(
     LaunchedEffect(key1 = true) {
         userClassesViewModel.getClassRequests(classId)
     }
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a")
 
     val classRequestsStatus = userClassesViewModel.classRequestsStatus.collectAsState()
     val requestResponseStatus = userClassesViewModel.requestResponseStatus.collectAsState()
@@ -91,9 +96,12 @@ fun RequestsScreen(
 
                     if (!requests.isNullOrEmpty()) {
                         items(requests) { item ->
+                            val timestamp = LocalDateTime.parse(item.timestamp, formatter)
+                            val localDateTime = timestamp.format(outputFormatter)
+
                             RequestItemCard(
                                 email = item.user!!.email!!,
-                                timestamp = item.timestamp!!,
+                                timestamp = "Requested At: $localDateTime",
                                 status = item.status!!,
                                 { userClassesViewModel.approveRequest(item.id!!) },
                                 { userClassesViewModel.declineRequest(item.id!!) }
@@ -119,7 +127,10 @@ fun RequestItemCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(color = Color.White, shape = RoundedCornerShape(12.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(12.dp)
+            )
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

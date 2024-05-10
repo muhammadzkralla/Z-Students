@@ -2,6 +2,7 @@ package com.zkrallah.z_students.presentation.task
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -69,6 +71,7 @@ fun UserTaskSubmissionsScreen(
                     if (!submissions.isNullOrEmpty()) {
                         items(submissions) { item ->
                             SubmissionItem(
+                                email = item.user?.email ?: "",
                                 link = item.link ?: "",
                                 additional = item.additional ?: "",
                                 grade = item.grade ?: 0
@@ -83,6 +86,7 @@ fun UserTaskSubmissionsScreen(
 
 @Composable
 fun SubmissionItem(
+    email: String,
     link: String,
     additional: String,
     grade: Int
@@ -91,22 +95,33 @@ fun SubmissionItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(color = Color.White, shape = RoundedCornerShape(12.dp))
-            .padding(16.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
+            text = email,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
             text = "Link: $link",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        Text(
+            text = "Additional: $additional",
             style = MaterialTheme.typography.bodyMedium
         )
 
         Text(
-            text = "additional: $additional",
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Text(
-            text = "grade: $grade",
-            style = MaterialTheme.typography.bodyMedium
+            text = "Grade: $grade",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Red
         )
     }
 

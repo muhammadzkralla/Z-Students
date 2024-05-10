@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +22,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -55,7 +55,7 @@ fun MembersScreen(
                 val classes = apiResponse.data
 
                 if (!classes.isNullOrEmpty()) {
-                    items(classes) {item ->
+                    items(classes) { item ->
                         val role = item.authorities!![0]!!.authority
                         MemberCard(
                             firstName = item.firstName ?: "",
@@ -84,7 +84,10 @@ fun MemberCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(color = Color.White, shape = RoundedCornerShape(12.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(12.dp)
+            )
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -110,13 +113,12 @@ fun MemberCard(
         }
 
         if (imageUrl.isEmpty()) {
-            Image(
+            Icon(
                 painter = painterResource(R.drawable.ic_person),
                 contentDescription = "User Photo",
                 modifier = Modifier
                     .size(80.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
+                    .clip(CircleShape)
             )
         } else {
             CoilImage(

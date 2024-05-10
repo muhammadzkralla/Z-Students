@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -170,8 +171,7 @@ fun TaskDetailsScreen(
 
             Text(
                 text = "Description:",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.Black
+                style = MaterialTheme.typography.headlineMedium
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -185,8 +185,7 @@ fun TaskDetailsScreen(
 
             Text(
                 text = "Sources: ${task?.sources?.size ?: 0}",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.Black
+                style = MaterialTheme.typography.headlineMedium
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -237,13 +236,18 @@ fun SourceItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(color = Color.White, shape = RoundedCornerShape(12.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(12.dp)
+            )
             .padding(16.dp)
     ) {
-        Text(
-            text = "source: $source",
-            style = MaterialTheme.typography.bodyMedium
-        )
+        SelectionContainer {
+            Text(
+                text = "Source: $source",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
     }
 
 }

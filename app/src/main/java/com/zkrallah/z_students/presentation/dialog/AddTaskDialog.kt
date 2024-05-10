@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -71,7 +72,7 @@ fun AddTaskDialog(
             Box(
                 modifier = Modifier
                     .padding(16.dp)
-                    .background(Color.White, RoundedCornerShape(8.dp))
+                    .background(color = MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp))
             ) {
                 Column(
                     modifier = Modifier
@@ -201,7 +202,7 @@ fun AddTaskDialog(
 @Preview(showBackground = true)
 @Composable
 fun PreviewAddTaskDialog() {
-    AddTaskDialog({}) { title, desc, due ->
+    AddTaskDialog({}) { _, _, _ ->
 
     }
 }

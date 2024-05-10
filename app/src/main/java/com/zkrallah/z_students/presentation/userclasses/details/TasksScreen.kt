@@ -1,6 +1,5 @@
 package com.zkrallah.z_students.presentation.userclasses.details
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,7 +54,7 @@ fun TasksScreen(
                 val tasks = apiResponse.data?.reversed()
 
                 if (!tasks.isNullOrEmpty()) {
-                    items(tasks) {item ->
+                    items(tasks) { item ->
                         TaskCard(
                             title = item.title!!,
                             due = item.due!!,
@@ -83,7 +82,10 @@ fun TaskCard(
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(16.dp)
-            .background(color = Color.White, shape = RoundedCornerShape(12.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(12.dp)
+            )
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -109,13 +111,12 @@ fun TaskCard(
             )
         }
 
-        Image(
+        Icon(
             painter = painterResource(R.drawable.ic_circle),
             contentDescription = "Tasks",
             modifier = Modifier
                 .size(80.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
+                .clip(CircleShape)
         )
     }
 }
