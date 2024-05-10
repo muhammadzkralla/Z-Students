@@ -34,7 +34,6 @@ import androidx.navigation.NavController
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.presentation.userclasses.UserClassesViewModel
 import com.zkrallah.z_students.showToast
-import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,27 +44,26 @@ fun RequestsScreen(
     className: String
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = true) {
         userClassesViewModel.getClassRequests(classId)
     }
 
     val classRequestsStatus = userClassesViewModel.classRequestsStatus.collectAsState()
+    val requestResponseStatus = userClassesViewModel.requestResponseStatus.collectAsState()
 
-    LaunchedEffect(key1 = true) {
-        userClassesViewModel.requestResponseStatus.collectLatest { apiResponse ->
-            apiResponse?.let {
-                if (apiResponse.success) {
-                    val request = apiResponse.data
-                    request?.let {
-                        showToast(
-                            context,
-                            "Request from ${request.user!!.email} is ${request.status}}!"
-                        )
-                    }
-                } else showToast(context, apiResponse.message)
+    requestResponseStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            val request = apiResponse.data
+            request?.let {
+                showToast(
+                    context,
+                    "Request from ${request.user!!.email} is ${request.status}}!"
+                )
             }
-        }
+        } else showToast(context, apiResponse.message)
+        userClassesViewModel.resetRequestResponseStatus()
     }
+
     Scaffold(
         topBar = {
             TopAppBar(

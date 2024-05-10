@@ -28,9 +28,17 @@ class ResetPasswordViewModel @Inject constructor(
         }
     }
 
+    fun resetResendStatus() {
+        _resendStatus.value = null
+    }
+
     fun resetPassword(email: String, password: String, code: Int) {
         viewModelScope.launch {
             _resetStatus.emit(authRepository.resetPassword(email, password, code))
         }
+    }
+
+    fun resetResetStatus() {
+        _resetStatus.value = null
     }
 }

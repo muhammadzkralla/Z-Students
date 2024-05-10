@@ -61,6 +61,10 @@ class TaskDetailsViewModel @Inject constructor(
         }
     }
 
+    fun resetAddSourceStatus() {
+        _addSourceStatus.value = null
+    }
+
     fun getTaskSubmissions(taskId: Long) {
         viewModelScope.launch {
             _getTaskSubmissionsStatus.emit(taskRepository.getTaskSubmissions(taskId))
@@ -80,10 +84,18 @@ class TaskDetailsViewModel @Inject constructor(
         }
     }
 
+    fun resetUpdateSubmissionStatus() {
+        _updateSubmissionStatus.value = null
+    }
+
     fun addSubmission(taskId: Long, link: String, additional: String) {
         viewModelScope.launch {
             _addSubmissionStatus.emit(taskRepository.addSubmission(taskId, link, additional))
         }
+    }
+
+    fun resetAddSubmissionStatus() {
+        _addSubmissionStatus.value = null
     }
 
     fun getUserTaskSubmissions(taskId: Long) {

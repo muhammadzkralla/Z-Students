@@ -143,9 +143,11 @@ fun BrowseScreen(
             AddClassDialog(onDismissRequest = {
                 showAddClassDialog.value = false
             }) { name, description ->
-                browseViewModel.addClass(name, description)
-                showAddClassDialog.value = false
-                pullToRefreshState.startRefresh()
+                if (name.isNotEmpty() && description.isNotEmpty()) {
+                    browseViewModel.addClass(name, description)
+                    showAddClassDialog.value = false
+                    pullToRefreshState.startRefresh()
+                } else showToast(context, "Please add all the fields.")
             }
         }
     }

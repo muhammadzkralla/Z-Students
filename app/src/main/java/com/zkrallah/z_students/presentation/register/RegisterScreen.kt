@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -31,26 +32,32 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.zkrallah.z_students.R
+import com.zkrallah.z_students.showToast
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
     registerViewModel: RegisterViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     val email = remember { mutableStateOf(TextFieldValue()) }
     val password = remember { mutableStateOf(TextFieldValue()) }
     val firstName = remember { mutableStateOf(TextFieldValue()) }
     val lastName = remember { mutableStateOf(TextFieldValue()) }
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login))
-    val loginStatus = registerViewModel.registerStatus.collectAsState()
 
-    loginStatus.value?.let { apiResponse ->
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.login))
+
+    val registerStatus = registerViewModel.registerStatus.collectAsState()
+
+    registerStatus.value?.let { apiResponse ->
         Log.d("RegisterScreen", "RegisterScreen: $apiResponse")
         if (apiResponse.success) {
             registerViewModel.saveUser(apiResponse.data!!)
             val userEmail = email.value.text
             navController.navigate("Verification/${userEmail}")
-        }
+        } else showToast(context, apiResponse.message)
+        registerViewModel.resetRegisterStatus()
     }
 
 
@@ -89,7 +96,10 @@ fun RegisterScreen(
             label = { Text("Password") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
@@ -119,12 +129,18 @@ fun RegisterScreen(
 
         OutlinedButton(
             onClick = {
-                registerViewModel.registerStudent(
-                    email.value.text,
-                    password.value.text,
-                    firstName.value.text,
-                    lastName.value.text
-                )
+                if (email.value.text.isNotEmpty()
+                    && password.value.text.isNotEmpty()
+                    && firstName.value.text.isNotEmpty()
+                    && lastName.value.text.isNotEmpty()
+                ) {
+                    registerViewModel.registerStudent(
+                        email.value.text,
+                        password.value.text,
+                        firstName.value.text,
+                        lastName.value.text
+                    )
+                } else showToast(context, "Please add all the fields.")
             },
             shape = RoundedCornerShape(50),
             modifier = Modifier
@@ -136,12 +152,18 @@ fun RegisterScreen(
 
         OutlinedButton(
             onClick = {
-                registerViewModel.registerTeacher(
-                    email.value.text,
-                    password.value.text,
-                    firstName.value.text,
-                    lastName.value.text
-                )
+                if (email.value.text.isNotEmpty()
+                    && password.value.text.isNotEmpty()
+                    && firstName.value.text.isNotEmpty()
+                    && lastName.value.text.isNotEmpty()
+                ) {
+                    registerViewModel.registerTeacher(
+                        email.value.text,
+                        password.value.text,
+                        firstName.value.text,
+                        lastName.value.text
+                    )
+                } else showToast(context, "Please add all the fields.")
             },
             shape = RoundedCornerShape(50),
             modifier = Modifier

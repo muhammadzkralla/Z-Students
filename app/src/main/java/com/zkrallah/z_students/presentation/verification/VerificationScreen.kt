@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,6 +43,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.zkrallah.z_students.R
+import com.zkrallah.z_students.showToast
 import com.zkrallah.z_students.ui.theme.GreyDark
 import com.zkrallah.z_students.ui.theme.GreyLight
 
@@ -51,21 +53,26 @@ fun VerificationScreen(
     verificationViewModel: VerificationViewModel = hiltViewModel(),
     email: String,
 ) {
+    val context = LocalContext.current
+
     var otpValue by remember { mutableStateOf("") }
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.otp))
+
     val verificationStatus = verificationViewModel.verificationStatus.collectAsState()
     val resendStatus = verificationViewModel.resendStatus.collectAsState()
 
     verificationStatus.value?.let { apiResponse ->
         if (apiResponse.success) {
             navController.navigate("Login")
-        }
+        } else showToast(context, apiResponse.message)
+        verificationViewModel.resetVerificationStatus()
     }
 
     resendStatus.value?.let { apiResponse ->
         if (apiResponse.success) {
             navController.navigate("Verification/${email}")
-        }
+        } else showToast(context, apiResponse.message)
+        verificationViewModel.resetResendStatus()
     }
 
     Column(
@@ -79,7 +86,7 @@ fun VerificationScreen(
         Text(
             text = "Check Your Phone!",
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.h5
+            style = MaterialTheme.typography.headlineMedium
         )
 
         Text(
@@ -105,10 +112,12 @@ fun VerificationScreen(
 
         OutlinedButton(
             onClick = {
-                verificationViewModel.verifyCode(
-                    email,
-                    otpValue.toInt()
-                )
+                if (otpValue.isNotEmpty()) {
+                    verificationViewModel.verifyCode(
+                        email,
+                        otpValue.toInt()
+                    )
+                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Green
@@ -204,7 +213,7 @@ private fun CharView(
             )
             .padding(2.dp),
         text = char,
-        style = MaterialTheme.typography.h4,
+        style = MaterialTheme.typography.headlineMedium,
         color = if (isFocused) {
             GreyLight
         } else {

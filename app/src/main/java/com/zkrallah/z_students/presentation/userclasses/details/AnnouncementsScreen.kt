@@ -38,7 +38,7 @@ fun AnnouncementsScreen(
     classId: Long
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = true) {
         userClassesViewModel.getClassAnnouncements(classId)
     }
 

@@ -44,7 +44,7 @@ fun TaskSubmissionsScreen(
     taskTitle: String
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = true) {
         taskDetailsViewModel.getTaskSubmissions(taskId)
     }
 
@@ -54,6 +54,13 @@ fun TaskSubmissionsScreen(
 
     fun showDialog(submission: Submission) {
         selectedSubmission = submission
+    }
+
+    updateSubmissionStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            showToast(context, "Grade Updated to ${apiResponse.data?.grade}!")
+        } else showToast(context, apiResponse.message)
+        taskDetailsViewModel.resetUpdateSubmissionStatus()
     }
 
     Scaffold(

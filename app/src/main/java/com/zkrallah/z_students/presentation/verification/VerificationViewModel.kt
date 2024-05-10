@@ -2,7 +2,6 @@ package com.zkrallah.z_students.presentation.verification
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zkrallah.z_students.domain.models.User
 import com.zkrallah.z_students.domain.repositories.AuthRepository
 import com.zkrallah.z_students.domain.response.ApiResponse
 import com.zkrallah.z_students.domain.response.MessageResponse
@@ -32,5 +31,13 @@ class VerificationViewModel @Inject constructor(
         viewModelScope.launch {
             _resendStatus.emit(authRepository.resendCode(email))
         }
+    }
+
+    fun resetVerificationStatus() {
+        _verificationStatus.value = null
+    }
+
+    fun resetResendStatus() {
+        _resendStatus.value = null
     }
 }

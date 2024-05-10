@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,6 +43,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.zkrallah.z_students.R
+import com.zkrallah.z_students.showToast
 import com.zkrallah.z_students.ui.theme.GreyDark
 import com.zkrallah.z_students.ui.theme.GreyLight
 
@@ -51,16 +53,20 @@ fun ConfirmResetScreen(
     resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel(),
     email: String,
 ) {
+    val context = LocalContext.current
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.reset))
+
     var otpValue by remember { mutableStateOf("") }
     val password = remember { mutableStateOf(TextFieldValue()) }
     val confirmPassword = remember { mutableStateOf(TextFieldValue()) }
+
     val resetStatus = resetPasswordViewModel.resetStatus.collectAsState()
 
     resetStatus.value?.let { apiResponse ->
         if (apiResponse.success) {
             navController.navigate("Login")
-        }
+        } else showToast(context, apiResponse.message)
+        resetPasswordViewModel.resetResetStatus()
     }
 
     Column(
@@ -121,13 +127,13 @@ fun ConfirmResetScreen(
                 val newPassword = password.value.text
                 val confirmation = confirmPassword.value.text
 
-                if (newPassword == confirmation) {
+                if (newPassword.isNotEmpty() && newPassword == confirmation) {
                     resetPasswordViewModel.resetPassword(
                         email,
                         newPassword,
                         otpValue.toInt()
                     )
-                }
+                } else showToast(context, "Password is empty or not matching!")
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Green
@@ -204,7 +210,7 @@ private fun CharView(
             )
             .padding(2.dp),
         text = char,
-        style = MaterialTheme.typography.h4,
+        style = MaterialTheme.typography.headlineMedium,
         color = if (isFocused) {
             GreyLight
         } else {

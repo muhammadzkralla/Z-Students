@@ -32,6 +32,10 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+    fun resetRegisterStatus() {
+        _registerStatus.value = null
+    }
+
     fun saveUser(user: User) {
         viewModelScope.launch {
             authRepository.saveUser(user)

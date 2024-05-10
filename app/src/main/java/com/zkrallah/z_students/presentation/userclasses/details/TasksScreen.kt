@@ -41,7 +41,7 @@ fun TasksScreen(
     classId: Long
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = true) {
         userClassesViewModel.getClassTasks(classId)
     }
 

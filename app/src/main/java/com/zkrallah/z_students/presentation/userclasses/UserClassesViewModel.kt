@@ -106,15 +106,27 @@ class UserClassesViewModel @Inject constructor(
         }
     }
 
+    fun resetRequestResponseStatus() {
+        _requestResponseStatus.value = null
+    }
+
     fun addTask(classId: Long, title: String, desc: String, due: String) {
         viewModelScope.launch {
             _addTaskStatus.emit(classRepository.addTask(classId, title, desc, due))
         }
     }
 
+    fun resetAddTaskStatus() {
+        _addTaskStatus.value = null
+    }
+
     fun addAnnouncement(classId: Long, title: String, content: String) {
         viewModelScope.launch {
             _addAnnouncementStatus.emit(classRepository.addAnnouncement(classId, title, content))
         }
+    }
+
+    fun resetAddAnnouncementStatus() {
+        _addAnnouncementStatus.value = null
     }
 }

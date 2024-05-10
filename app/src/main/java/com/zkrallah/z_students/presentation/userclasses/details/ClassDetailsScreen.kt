@@ -53,7 +53,7 @@ fun ClassDetailsScreen(
     className: String
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = true) {
         userClassesViewModel.getUserRole()
     }
 
@@ -72,12 +72,14 @@ fun ClassDetailsScreen(
         if (apiResponse.success) {
             userClassesViewModel.getClassTasks(classId)
         } else showToast(context, apiResponse.message)
+        userClassesViewModel.resetAddTaskStatus()
     }
 
     addAnnouncementStatus.value?.let { apiResponse ->
         if (apiResponse.success) {
             userClassesViewModel.getClassAnnouncements(classId)
         } else showToast(context, apiResponse.message)
+        userClassesViewModel.resetAddAnnouncementStatus()
     }
 
     Scaffold(
@@ -196,8 +198,10 @@ fun ClassDetailsScreen(
                 AddTaskDialog(onDismissRequest = {
                     showAddTaskDialog.value = false
                 }) { title, desc, due ->
-                    userClassesViewModel.addTask(classId, title, desc, due)
-                    showAddTaskDialog.value = false
+                    if (title.isNotEmpty() && desc.isNotEmpty() && due.isNotEmpty()) {
+                        userClassesViewModel.addTask(classId, title, desc, due)
+                        showAddTaskDialog.value = false
+                    } else showToast(context, "Please add all the fields.")
                 }
             }
 
@@ -205,8 +209,10 @@ fun ClassDetailsScreen(
                 AddAnnouncementDialog(onDismissRequest = {
                     showAddAnnouncementDialog.value = false
                 }) { title, content ->
-                    userClassesViewModel.addAnnouncement(classId, title, content)
-                    showAddAnnouncementDialog.value = false
+                    if (title.isNotEmpty() && content.isNotEmpty()) {
+                        userClassesViewModel.addAnnouncement(classId, title, content)
+                        showAddAnnouncementDialog.value = false
+                    } else showToast(context, "Please add all the fields.")
                 }
             }
         }

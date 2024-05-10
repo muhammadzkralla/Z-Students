@@ -30,7 +30,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,7 +57,6 @@ import com.zkrallah.z_students.R
 import com.zkrallah.z_students.showToast
 import com.zkrallah.z_students.util.cacheImageToFile
 import com.zkrallah.z_students.util.getImageFileFromRealPath
-import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -69,9 +67,6 @@ fun UserScreen(
     userViewModel: UserViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        userViewModel.getCurrentUser()
-    }
 
     val getContent =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
@@ -90,6 +85,7 @@ fun UserScreen(
     val lastName = remember { mutableStateOf(TextFieldValue()) }
     val dob = remember { mutableStateOf(TextFieldValue()) }
 
+    val getUserStatus = userViewModel.getUserStatus.collectAsState()
     val updateUserStatus = userViewModel.updateUserStatus.collectAsState()
     val uploadPhotoStatus = userViewModel.uploadPhotoStatus.collectAsState()
 
@@ -98,25 +94,21 @@ fun UserScreen(
     val reverseFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
-    LaunchedEffect(key1 = true) {
-        userViewModel.getUserStatus.collectLatest { apiResponse ->
-            apiResponse?.let {
-                if (apiResponse.success) {
-                    val user = apiResponse.data
-                    user?.let {
-                        firstName.value = TextFieldValue(user.firstName ?: "")
-                        lastName.value = TextFieldValue(user.lastName ?: "")
-                        img.value = user.imageUrl ?: ""
+    getUserStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            val user = apiResponse.data
+            user?.let {
+                firstName.value = TextFieldValue(user.firstName ?: "")
+                lastName.value = TextFieldValue(user.lastName ?: "")
+                img.value = user.imageUrl ?: ""
 
-                        if (!user.dob.isNullOrEmpty()) {
-                            val date = LocalDate.parse(user.dob, reverseFormatter)
-                            val formattedDate = date.format(formatter)
-                            dob.value = TextFieldValue(formattedDate)
-                        }
-                    }
-                } else showToast(context, apiResponse.message)
+                if (!user.dob.isNullOrEmpty()) {
+                    val date = LocalDate.parse(user.dob, reverseFormatter)
+                    val formattedDate = date.format(formatter)
+                    dob.value = TextFieldValue(formattedDate)
+                }
             }
-        }
+        } else showToast(context, apiResponse.message)
     }
 
     updateUserStatus.value?.let { apiResponse ->

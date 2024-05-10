@@ -51,32 +51,32 @@ fun TaskDetailsScreen(
     taskTitle: String
 ) {
     val context = LocalContext.current
+
     LaunchedEffect(key1 = true) {
         taskDetailsViewModel.getUserRole()
         taskDetailsViewModel.getTask(taskId)
-        taskDetailsViewModel.getUserTaskSubmissions(taskId)
-
-        taskDetailsViewModel.addSubmissionStatus.collectLatest { apiResponse ->
-            apiResponse?.let {
-                if (apiResponse.success) {
-                    showToast(context, "Submission Added!")
-                } else showToast(context, "Failed to Submit: ${apiResponse.message}")
-            }
-        }
-
-        taskDetailsViewModel.addSourceStatus.collectLatest { apiResponse ->
-            apiResponse?.let {
-                if (apiResponse.success) {
-                    showToast(context, "Source Added!")
-                } else showToast(context, apiResponse.message)
-            }
-        }
     }
 
     val userRoleStatus = taskDetailsViewModel.userRoleStatus.collectAsState()
+    val addSubmissionStatus = taskDetailsViewModel.addSubmissionStatus.collectAsState()
+    val addSourceStatus = taskDetailsViewModel.addSourceStatus.collectAsState()
 
     val showAddSourceDialog = remember { mutableStateOf(false) }
     val showAddSubmissionDialog = remember { mutableStateOf(false) }
+
+    addSubmissionStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            showToast(context, "Submission Added!")
+        } else showToast(context, "Failed to Submit: ${apiResponse.message}")
+        taskDetailsViewModel.resetAddSubmissionStatus()
+    }
+
+    addSourceStatus.value?.let { apiResponse ->
+        if (apiResponse.success) {
+            showToast(context, "Source Added!")
+        } else showToast(context, apiResponse.message)
+        taskDetailsViewModel.resetAddSourceStatus()
+    }
 
     Scaffold(
         topBar = {
@@ -208,8 +208,10 @@ fun TaskDetailsScreen(
             AddSourceDialog(onDismissRequest = {
                 showAddSourceDialog.value = false
             }) { source ->
-                taskDetailsViewModel.addSource(taskId, source)
-                showAddSourceDialog.value = false
+                if (source.isNotEmpty()) {
+                    taskDetailsViewModel.addSource(taskId, source)
+                    showAddSourceDialog.value = false
+                } else showToast(context, "Please add all the fields.")
             }
         }
 
@@ -217,8 +219,10 @@ fun TaskDetailsScreen(
             AddSubmissionDialog(onDismissRequest = {
                 showAddSubmissionDialog.value = false
             }) { link, additional ->
-                taskDetailsViewModel.addSubmission(taskId, link, additional)
-                showAddSubmissionDialog.value = false
+                if (link.isNotEmpty() && additional.isNotEmpty()) {
+                    taskDetailsViewModel.addSubmission(taskId, link, additional)
+                    showAddSubmissionDialog.value = false
+                } else showToast(context, "Please add all the fields.")
             }
         }
     }

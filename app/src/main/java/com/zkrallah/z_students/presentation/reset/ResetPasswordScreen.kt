@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.Composable
@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -30,22 +31,26 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.zkrallah.z_students.R
+import com.zkrallah.z_students.showToast
 
 @Composable
 fun ResetPasswordScreen(
     navController: NavController,
     resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
 
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.reset))
     val email = remember { mutableStateOf(TextFieldValue()) }
+
     val resendStatus = resetPasswordViewModel.resendStatus.collectAsState()
 
     resendStatus.value?.let { apiResponse ->
         if (apiResponse.success) {
             val userEmail = email.value.text
             navController.navigate("ConfirmReset/${userEmail}")
-        }
+        } else showToast(context, apiResponse.message)
+        resetPasswordViewModel.resetResendStatus()
     }
 
     Column(
@@ -79,7 +84,9 @@ fun ResetPasswordScreen(
 
         OutlinedButton(
             onClick = {
-                resetPasswordViewModel.resendCode(email.value.text)
+                if (email.value.text.isNotEmpty()) {
+                    resetPasswordViewModel.resendCode(email.value.text)
+                } else showToast(context, "Email can not be empty!")
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Green

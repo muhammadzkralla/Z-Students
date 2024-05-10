@@ -25,6 +25,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun resetLoginStatus() {
+        _loginStatus.value = null
+    }
+
     fun setLoggedInStatus() {
         viewModelScope.launch {
             authRepository.setLoggedInDone()
