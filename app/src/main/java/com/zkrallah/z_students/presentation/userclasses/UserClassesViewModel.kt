@@ -54,10 +54,14 @@ class UserClassesViewModel @Inject constructor(
         MutableStateFlow(null)
     val addAnnouncementStatus: StateFlow<ApiResponse<Announcement?>?> = _addAnnouncementStatus
 
-    fun getUserClasses() {
+    init {
         viewModelScope.launch {
             _getUserClassesStatus.emit(classRepository.getUserClasses())
         }
+    }
+
+    suspend fun refresh() {
+        _getUserClassesStatus.emit(classRepository.getUserClasses())
     }
 
     fun getClassMembers(classId: Long) {

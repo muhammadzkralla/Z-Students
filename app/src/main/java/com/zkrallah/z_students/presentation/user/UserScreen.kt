@@ -58,6 +58,7 @@ import com.zkrallah.z_students.R
 import com.zkrallah.z_students.showToast
 import com.zkrallah.z_students.util.cacheImageToFile
 import com.zkrallah.z_students.util.getImageFileFromRealPath
+import kotlinx.coroutines.flow.collectLatest
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -89,7 +90,6 @@ fun UserScreen(
     val lastName = remember { mutableStateOf(TextFieldValue()) }
     val dob = remember { mutableStateOf(TextFieldValue()) }
 
-    val getUserStatus = userViewModel.getUserStatus.collectAsState()
     val updateUserStatus = userViewModel.updateUserStatus.collectAsState()
     val uploadPhotoStatus = userViewModel.uploadPhotoStatus.collectAsState()
 
@@ -98,42 +98,40 @@ fun UserScreen(
     val reverseFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
-    getUserStatus.value?.let { apiResponse ->
-        if (apiResponse.success) {
-            LaunchedEffect(Unit) {
-                val user = apiResponse.data
-                user?.let {
-                    firstName.value = TextFieldValue(user.firstName ?: "")
-                    lastName.value = TextFieldValue(user.lastName ?: "")
-                    img.value = user.imageUrl ?: ""
+    LaunchedEffect(key1 = true) {
+        userViewModel.getUserStatus.collectLatest { apiResponse ->
+            apiResponse?.let {
+                if (apiResponse.success) {
+                    val user = apiResponse.data
+                    user?.let {
+                        firstName.value = TextFieldValue(user.firstName ?: "")
+                        lastName.value = TextFieldValue(user.lastName ?: "")
+                        img.value = user.imageUrl ?: ""
 
-                    if (!user.dob.isNullOrEmpty()) {
-                        val date = LocalDate.parse(user.dob, reverseFormatter)
-                        val formattedDate = date.format(formatter)
-                        dob.value = TextFieldValue(formattedDate)
+                        if (!user.dob.isNullOrEmpty()) {
+                            val date = LocalDate.parse(user.dob, reverseFormatter)
+                            val formattedDate = date.format(formatter)
+                            dob.value = TextFieldValue(formattedDate)
+                        }
                     }
-                }
+                } else showToast(context, apiResponse.message)
             }
-        } else showToast(context, apiResponse.message)
-
-        userViewModel.resetGetUserStatus()
+        }
     }
 
     updateUserStatus.value?.let { apiResponse ->
         if (apiResponse.success) {
-            LaunchedEffect(Unit) {
-                showToast(context, "Updated")
-                val user = apiResponse.data
-                user?.let {
-                    firstName.value = TextFieldValue(user.firstName ?: "")
-                    lastName.value = TextFieldValue(user.lastName ?: "")
-                    img.value = user.imageUrl ?: ""
+            showToast(context, "Updated")
+            val user = apiResponse.data
+            user?.let {
+                firstName.value = TextFieldValue(user.firstName ?: "")
+                lastName.value = TextFieldValue(user.lastName ?: "")
+                img.value = user.imageUrl ?: ""
 
-                    if (!user.dob.isNullOrEmpty()) {
-                        val date = LocalDate.parse(user.dob, reverseFormatter)
-                        val formattedDate = date.format(formatter)
-                        dob.value = TextFieldValue(formattedDate)
-                    }
+                if (!user.dob.isNullOrEmpty()) {
+                    val date = LocalDate.parse(user.dob, reverseFormatter)
+                    val formattedDate = date.format(formatter)
+                    dob.value = TextFieldValue(formattedDate)
                 }
             }
         } else showToast(context, apiResponse.message)
@@ -142,12 +140,10 @@ fun UserScreen(
 
     uploadPhotoStatus.value?.let { apiResponse ->
         if (apiResponse.success) {
-            LaunchedEffect(Unit) {
-                showToast(context, "Uploaded")
-                val url = apiResponse.data
-                url?.let {
-                    img.value = url.message ?: ""
-                }
+            showToast(context, "Uploaded")
+            val url = apiResponse.data
+            url?.let {
+                img.value = url.message ?: ""
             }
         } else showToast(context, apiResponse.message)
         userViewModel.resetUploadPhotoStatus()

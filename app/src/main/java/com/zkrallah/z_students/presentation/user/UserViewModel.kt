@@ -49,10 +49,6 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun resetGetUserStatus() {
-        _getUserStatus.value = null
-    }
-
     fun resetUpdateUserStatus() {
         _updateUserStatus.value = null
     }

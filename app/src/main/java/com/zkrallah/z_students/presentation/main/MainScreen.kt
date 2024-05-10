@@ -1,7 +1,5 @@
 package com.zkrallah.z_students.presentation.main
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -81,7 +79,7 @@ fun SetupNavigation(startingScreen: String) {
                             NavigationBarItem(
                                 selected = index == navigationSelectedItem,
                                 label = {
-                                    if (index == navigationSelectedItem) Text(item.name)
+                                    Text(item.name)
                                 },
                                 onClick = {
                                     navigationSelectedItem = index
@@ -131,19 +129,7 @@ fun Navigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = startingScreen,
-        enterTransition = {
-            EnterTransition.None
-        },
-        exitTransition = {
-            ExitTransition.None
-        },
-        popExitTransition = {
-            ExitTransition.None
-        },
-        popEnterTransition = {
-            EnterTransition.None
-        }
+        startDestination = startingScreen
     ) {
         composable(route = "OnBoarding") {
             OnBoarding(

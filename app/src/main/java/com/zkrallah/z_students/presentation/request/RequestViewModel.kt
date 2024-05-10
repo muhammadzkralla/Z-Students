@@ -18,9 +18,13 @@ class RequestViewModel @Inject constructor(
     private val _getRequestsStatus: MutableStateFlow<ApiResponse<List<Request>?>?> = MutableStateFlow(null)
     val getRequestsStatus: StateFlow<ApiResponse<List<Request>?>?> = _getRequestsStatus
 
-    fun getRequests() {
+    init {
         viewModelScope.launch {
             _getRequestsStatus.emit(requestsRepository.getUserRequests())
         }
+    }
+
+    suspend fun refresh() {
+        _getRequestsStatus.emit(requestsRepository.getUserRequests())
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,15 +15,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,39 +39,63 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.showToast
+import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
 fun UserClassesScreen(
     navController: NavController,
     userClassesViewModel: UserClassesViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        userClassesViewModel.getUserClasses()
-    }
 
     val getClassesStatus = userClassesViewModel.getUserClassesStatus.collectAsState()
+    val pullToRefreshState = rememberPullToRefreshState()
+    val lazyListState = rememberLazyListState()
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
+    Box(
+        modifier = Modifier
+            .nestedScroll(pullToRefreshState.nestedScrollConnection)
     ) {
-        getClassesStatus.value?.let { apiResponse ->
-            if (apiResponse.success) {
-                val classes = apiResponse.data
 
-                if (!classes.isNullOrEmpty()) {
-                    items(classes) {item ->
-                        ClassItemCard(
-                            className = item.name!!,
-                            description = item.description!!,
-                            numberOfMembers = item.numberOfUsers!!
-                        ) {
-                            navController.navigate("ClassDetails/${item.id}/${item.name}")
+        LazyColumn(
+            state = lazyListState,
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            getClassesStatus.value?.let { apiResponse ->
+                if (apiResponse.success) {
+                    val classes = apiResponse.data?.reversed()
+
+                    if (!classes.isNullOrEmpty()) {
+                        items(classes) { item ->
+                            ClassItemCard(
+                                className = item.name!!,
+                                description = item.description!!,
+                                numberOfMembers = item.numberOfUsers!!
+                            ) {
+                                navController.navigate("ClassDetails/${item.id}/${item.name}")
+                            }
                         }
                     }
-                }
-            } else showToast(context, apiResponse.message)
+                } else showToast(context, apiResponse.message)
+            }
         }
+
+        if (pullToRefreshState.isRefreshing) {
+            LaunchedEffect(true) {
+                userClassesViewModel.refresh()
+                delay(1000L)
+                pullToRefreshState.endRefresh()
+            }
+        }
+
+        PullToRefreshContainer(
+            state = pullToRefreshState,
+            modifier = Modifier
+                .align(Alignment.TopCenter),
+        )
+
     }
 
 }
