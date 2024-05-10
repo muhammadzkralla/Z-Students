@@ -25,7 +25,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -39,32 +38,34 @@ import com.google.accompanist.pager.PagerState
 import com.zkrallah.z_students.R
 import com.zkrallah.z_students.domain.models.OnBoarding
 import com.zkrallah.z_students.ui.theme.Grey300
-import com.zkrallah.z_students.ui.theme.Grey900
 import com.zkrallah.z_students.ui.theme.RedLight
 
 @ExperimentalPagerApi
 @Composable
-fun OnBoarding(onBoardingViewModel: OnBoardingViewModel = hiltViewModel(), navController: NavController) {
+fun OnBoarding(
+    onBoardingViewModel: OnBoardingViewModel = hiltViewModel(),
+    navController: NavController
+) {
     val items = ArrayList<OnBoarding>()
 
     items.add(
         OnBoarding(
             R.raw.animation1,
-            "Title 1"
+            "Create classes, add tasks with sources."
         )
     )
 
     items.add(
         OnBoarding(
             R.raw.animation2,
-            "Title 2"
+            "Create announcements and grade students' submissions."
         )
     )
 
     items.add(
         OnBoarding(
             R.raw.animation3,
-            "Title 3"
+            "Users will submit their answers after requesting to join your class."
         )
     )
     val pagerState = rememberPagerState(
@@ -79,7 +80,7 @@ fun OnBoarding(onBoardingViewModel: OnBoardingViewModel = hiltViewModel(), navCo
         pagerState = pagerState,
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White),
+            .background(color = MaterialTheme.colorScheme.surface),
         onBoardingViewModel,
         navController
     )
@@ -116,7 +117,6 @@ fun OnBoardingPager(
                     Text(
                         text = item[page].title,
                         modifier = Modifier.padding(top = 50.dp),
-                        color = Color.Black,
                         style = MaterialTheme.typography.headlineSmall,
                     )
                 }
@@ -192,7 +192,11 @@ fun Indicator(isSelected: Boolean) {
 }
 
 @Composable
-fun BottomSection(currentPager: Int, onBoardingViewModel: OnBoardingViewModel, navController: NavController) {
+fun BottomSection(
+    currentPager: Int,
+    onBoardingViewModel: OnBoardingViewModel,
+    navController: NavController
+) {
     Row(
         modifier = Modifier
             .padding(bottom = 20.dp)
@@ -207,8 +211,7 @@ fun BottomSection(currentPager: Int, onBoardingViewModel: OnBoardingViewModel, n
                 Text(
                     text = "Get Started",
                     modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 40.dp),
-                    color = Grey900
+                        .padding(vertical = 8.dp, horizontal = 40.dp)
                 )
             }
         } else {
@@ -219,8 +222,7 @@ fun BottomSection(currentPager: Int, onBoardingViewModel: OnBoardingViewModel, n
                 Text(
                     text = "Skip",
                     modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 40.dp),
-                    color = Grey900
+                        .padding(vertical = 8.dp, horizontal = 40.dp)
                 )
             }
         }
