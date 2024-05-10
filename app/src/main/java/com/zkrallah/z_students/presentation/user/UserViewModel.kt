@@ -25,11 +25,6 @@ class UserViewModel @Inject constructor(
     private val _uploadPhotoStatus: MutableStateFlow<ApiResponse<MessageResponse?>?> = MutableStateFlow(null)
     val uploadPhotoStatus: StateFlow<ApiResponse<MessageResponse?>?> = _uploadPhotoStatus
 
-    init {
-        viewModelScope.launch {
-            _getUserStatus.emit(userRepository.getCurrentUser())
-        }
-    }
 
     fun getCurrentUser() {
         viewModelScope.launch {
