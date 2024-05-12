@@ -7,15 +7,21 @@ This is an android mobile app built with Kotlin and Jetpack Compose for managing
 Teachers can create classes and add tasks with resources, and students will be able to submit their solutions to the tasks after requesting to join the class and being approved,
 and later teachers can grade the submissions and add announcements. <br> <br>
 
+• You can see the backend API used in this project from here : [Backend](https://github.com/muhammadzkralla/spring_boot_students_api "Backend") 
+
 ## Technologies Used
 
-- **Jetpack Compose**: For UI design.
-- **MVVM Architecture**: To structure the app.
-- **Kotlin Coroutines**: For threading and concurrency.
-- **Kotlin State Flow**: For managing UI state.
-- **Dagger Hilt**: For dependency injection.
-- **DataStore**: For caching and preferences.
-- **ZHttp**: For networking.
+- **Jetpack Compose**: For UI design. 🎨
+- **MVVM Architecture**: To structure the app. 🏗
+- **Kotlin Coroutines**: For threading and concurrency. 🧵
+- **Kotlin State Flow**: For managing UI state. ♒️
+- **Dagger Hilt**: For dependency injection. 💉
+- **DataStore**: For caching and preferences. 🎒
+- **ZHttp**: For networking. 🌐
+
+• You can see more about ZHttp HTTP Client Library from here : [ZHttp](https://github.com/muhammadzkralla/ZHttp "ZHttp") 
+
+  
 
 # On Boarding Screens :
 <table align="center">
