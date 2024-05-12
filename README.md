@@ -193,10 +193,10 @@ and later teachers can grade the submissions and add announcements. <br> <br>
       <img src ="https://github.com/muhammadzkralla/Z-Students/assets/54005330/7626cfe2-888b-417f-b9c7-75c4f26a0e77"/>
     </td>
     <td>
-      <img src ="https://github.com/muhammadzkralla/Z-Students/assets/54005330/e303871c-4ba6-488e-9228-1ae2192694d9"/>
+      <img src ="https://github.com/muhammadzkralla/Z-Students/assets/54005330/11e3d386-88fe-4919-b9f5-f10d83066bf5"/>
     </td>
     <td>
-      <img src ="https://github.com/muhammadzkralla/Z-Students/assets/54005330/abf8a4cc-c9d3-4989-9b1f-e273366eba3b"/>
+      <img src ="https://github.com/muhammadzkralla/Z-Students/assets/54005330/e303871c-4ba6-488e-9228-1ae2192694d9"/>
     </td>
   </tr>
 
