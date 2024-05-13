@@ -46,8 +46,7 @@ class BrowseRepositoryImpl(
     override suspend fun addClass(name: String, description: String): ApiResponse<Class?>? {
         val token = dataStore.getToken()
         val headers = listOf(
-            Header("Authorization", "Bearer $token"),
-            Header("Content-Type", "application/json")
+            Header("Authorization", "Bearer $token")
         )
 
         val classDto = ClassDto(name, description)

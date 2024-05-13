@@ -37,8 +37,7 @@ class TaskRepositoryImpl(
     override suspend fun addSource(taskId: Long, source: String): ApiResponse<Source?>? {
         val token = dataStore.getToken()
         val headers = listOf(
-            Header("Authorization", "Bearer $token"),
-            Header("Content-Type", "application/json")
+            Header("Authorization", "Bearer $token")
         )
 
         val sourceDto = SourceDto(source)
@@ -76,8 +75,7 @@ class TaskRepositoryImpl(
     ): ApiResponse<Submission?>? {
         val token = dataStore.getToken()
         val headers = listOf(
-            Header("Authorization", "Bearer $token"),
-            Header("Content-Type", "application/json")
+            Header("Authorization", "Bearer $token")
         )
 
         val submissionDto = SubmissionDto(link, additional, grade)
@@ -100,8 +98,7 @@ class TaskRepositoryImpl(
     ): ApiResponse<Submission?>? {
         val token = dataStore.getToken()
         val headers = listOf(
-            Header("Authorization", "Bearer $token"),
-            Header("Content-Type", "application/json")
+            Header("Authorization", "Bearer $token")
         )
         val userId = dataStore.getUserModel().id
 
