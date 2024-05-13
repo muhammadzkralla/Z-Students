@@ -38,8 +38,7 @@ class UserRepositoryImpl(
     ): ApiResponse<User?>? {
         val token = dataStore.getToken()
         val headers = listOf(
-            Header("Authorization", "Bearer $token"),
-            Header("Content-Type", "application/json")
+            Header("Authorization", "Bearer $token")
         )
         val userId = dataStore.getUserModel().id
 

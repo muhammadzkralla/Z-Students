@@ -140,8 +140,7 @@ class ClassRepositoryImpl(
     ): ApiResponse<Task?>? {
         val token = dataStore.getToken()
         val headers = listOf(
-            Header("Authorization", "Bearer $token"),
-            Header("Content-Type", "application/json")
+            Header("Authorization", "Bearer $token")
         )
 
         val taskDto = TaskDto(
@@ -168,8 +167,7 @@ class ClassRepositoryImpl(
     ): ApiResponse<Announcement?>? {
         val token = dataStore.getToken()
         val headers = listOf(
-            Header("Authorization", "Bearer $token"),
-            Header("Content-Type", "application/json")
+            Header("Authorization", "Bearer $token")
         )
 
         val announcementDto = AnnouncementDto(title, content)
