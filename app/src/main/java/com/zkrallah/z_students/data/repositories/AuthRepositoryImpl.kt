@@ -1,11 +1,5 @@
 package com.zkrallah.z_students.data.repositories
 
-import com.zkrallah.z_students.LOGIN_ENDPOINT
-import com.zkrallah.z_students.REGISTER_STUDENT_ENDPOINT
-import com.zkrallah.z_students.REGISTER_TEACHER_ENDPOINT
-import com.zkrallah.z_students.RESEND_CODE
-import com.zkrallah.z_students.RESET_PASSWORD
-import com.zkrallah.z_students.VERIFY_CODE
 import com.zkrallah.z_students.data.dataStore.DataStore
 import com.zkrallah.z_students.domain.dto.LoginDto
 import com.zkrallah.z_students.domain.dto.RegisterDto
@@ -33,7 +27,7 @@ class AuthRepositoryImpl(
         val registerDto = RegisterDto(email, password, firstName, lastName)
         val apiResponse =
             zHttpClient.post<ApiResponse<User?>>(
-                REGISTER_STUDENT_ENDPOINT, registerDto,
+                "api/auth/student/signup", registerDto,
                 null, null
             )
 
@@ -49,7 +43,7 @@ class AuthRepositoryImpl(
         val registerDto = RegisterDto(email, password, firstName, lastName)
         val apiResponse =
             zHttpClient.post<ApiResponse<User?>>(
-                REGISTER_TEACHER_ENDPOINT, registerDto,
+                "api/auth/teacher/signup", registerDto,
                 null, null
             )
 
@@ -59,7 +53,12 @@ class AuthRepositoryImpl(
     override suspend fun verifyCode(email: String, code: Int): ApiResponse<MessageResponse?>? {
         val verifyDto = VerifyDto(email, code)
         val apiResponse =
-            zHttpClient.post<ApiResponse<MessageResponse?>>(VERIFY_CODE, verifyDto, null, null)
+            zHttpClient.post<ApiResponse<MessageResponse?>>(
+                "api/auth/verify-code",
+                verifyDto,
+                null,
+                null
+            )
 
         return apiResponse?.body
     }
@@ -67,7 +66,12 @@ class AuthRepositoryImpl(
     override suspend fun resendCode(email: String): ApiResponse<MessageResponse?>? {
         val resendCodeDto = ResendCodeDto(email)
         val apiResponse =
-            zHttpClient.post<ApiResponse<MessageResponse?>>(RESEND_CODE, resendCodeDto, null, null)
+            zHttpClient.post<ApiResponse<MessageResponse?>>(
+                "api/auth/regenerate-code",
+                resendCodeDto,
+                null,
+                null
+            )
 
         return apiResponse?.body
     }
@@ -75,7 +79,7 @@ class AuthRepositoryImpl(
     override suspend fun login(email: String, password: String): ApiResponse<Token?>? {
         val loginDto = LoginDto(email, password)
         val apiResponse =
-            zHttpClient.post<ApiResponse<Token?>>(LOGIN_ENDPOINT, loginDto, null, null)
+            zHttpClient.post<ApiResponse<Token?>>("api/auth/login", loginDto, null, null)
 
         return apiResponse?.body
     }
@@ -88,7 +92,7 @@ class AuthRepositoryImpl(
         val resetPasswordDto = ResetPasswordDto(email, password, code)
         val apiResponse =
             zHttpClient.post<ApiResponse<MessageResponse?>>(
-                RESET_PASSWORD,
+                "api/auth/reset-password",
                 resetPasswordDto,
                 null,
                 null
