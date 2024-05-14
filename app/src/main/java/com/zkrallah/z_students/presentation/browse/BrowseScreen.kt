@@ -52,7 +52,11 @@ fun BrowseScreen(
     browseViewModel: BrowseViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    LaunchedEffect(key1 = true) {
+        browseViewModel.getUserRole()
+    }
 
+    val userRoleStatus = browseViewModel.userRoleStatus.collectAsState()
     val getClassesStatus = browseViewModel.getClassesStatus.collectAsState()
     val addClassStatus = browseViewModel.addClassStatus.collectAsState()
     val submitRequestStatus = browseViewModel.submitRequestStatus.collectAsState()
@@ -80,17 +84,19 @@ fun BrowseScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    showAddClassDialog.value = true
-                },
-                content = {
-                    Icon(
-                        imageVector = Icons.Rounded.Add,
-                        contentDescription = "Post or Upload"
-                    )
-                }
-            )
+            if (userRoleStatus.value != "STUDENT") {
+                FloatingActionButton(
+                    onClick = {
+                        showAddClassDialog.value = true
+                    },
+                    content = {
+                        Icon(
+                            imageVector = Icons.Rounded.Add,
+                            contentDescription = "Post or Upload"
+                        )
+                    }
+                )
+            }
         }
     ) { innerPadding ->
         Box(

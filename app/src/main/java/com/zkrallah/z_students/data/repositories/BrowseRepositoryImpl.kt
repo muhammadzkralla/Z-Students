@@ -61,4 +61,8 @@ class BrowseRepositoryImpl(
 
         return apiResponse?.body
     }
+
+    override suspend fun getUserRole(): String {
+        return dataStore.getUserModel().authorities?.get(0)?.name ?: "STUDENT"
+    }
 }

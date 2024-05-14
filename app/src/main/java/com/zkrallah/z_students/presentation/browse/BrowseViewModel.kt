@@ -25,6 +25,9 @@ class BrowseViewModel @Inject constructor(
     private val _addClassStatus: MutableStateFlow<ApiResponse<Class?>?> = MutableStateFlow(null)
     val addClassStatus: StateFlow<ApiResponse<Class?>?> = _addClassStatus
 
+    private val _userRoleStatus: MutableStateFlow<String> = MutableStateFlow("STUDENT")
+    val userRoleStatus: StateFlow<String> = _userRoleStatus
+
     init {
         viewModelScope.launch {
             _getClassesStatus.emit(browseRepository.getClasses())
@@ -53,5 +56,11 @@ class BrowseViewModel @Inject constructor(
 
     fun resetAddClassStatus() {
         _addClassStatus.value = null
+    }
+
+    fun getUserRole() {
+        viewModelScope.launch {
+            _userRoleStatus.emit(browseRepository.getUserRole())
+        }
     }
 }

@@ -10,4 +10,6 @@ interface BrowseRepository {
     suspend fun submitRequest(classId: Long): ApiResponse<Request?>?
 
     suspend fun addClass(name: String, description: String): ApiResponse<Class?>?
+
+    suspend fun getUserRole(): String
 }
