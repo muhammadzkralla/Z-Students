@@ -55,6 +55,10 @@ class TaskDetailsViewModel @Inject constructor(
         }
     }
 
+    suspend fun refreshTask(taskId: Long) {
+        _getTaskStatus.emit(taskRepository.getTask(taskId))
+    }
+
     fun addSource(taskId: Long, source: String) {
         viewModelScope.launch {
             _addSourceStatus.emit(taskRepository.addSource(taskId, source))

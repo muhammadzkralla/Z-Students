@@ -2,6 +2,7 @@ package com.zkrallah.z_students.presentation.task
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,8 +32,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -41,6 +46,7 @@ import com.zkrallah.z_students.domain.models.Task
 import com.zkrallah.z_students.presentation.dialog.AddSourceDialog
 import com.zkrallah.z_students.presentation.dialog.AddSubmissionDialog
 import com.zkrallah.z_students.showToast
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,6 +70,15 @@ fun TaskDetailsScreen(
 
     val showAddSourceDialog = remember { mutableStateOf(false) }
     val showAddSubmissionDialog = remember { mutableStateOf(false) }
+
+    val pullToRefreshState = rememberPullToRefreshState()
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(true) {
+            taskDetailsViewModel.refreshTask(taskId)
+            delay(1500)
+            pullToRefreshState.endRefresh()
+        }
+    }
 
     addSubmissionStatus.value?.let { apiResponse ->
         if (apiResponse.success) {
@@ -156,48 +171,58 @@ fun TaskDetailsScreen(
             }
         }
 
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = innerPadding.calculateTopPadding(), start = 16.dp)
+                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
-            Text(
-                text = "Due: ${task?.due}",
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.Red
+            PullToRefreshContainer(
+                modifier = Modifier.align(Alignment.TopCenter),
+                state = pullToRefreshState,
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Column {
+                Text(
+                    text = "Due: ${task?.due}",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.Red
+                )
 
-            Text(
-                text = "Description:",
-                style = MaterialTheme.typography.headlineMedium
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Description:",
+                    style = MaterialTheme.typography.headlineMedium
+                )
 
-            Text(
-                text = task?.description ?: "",
-                style = MaterialTheme.typography.bodyMedium
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = task?.description ?: "",
+                    style = MaterialTheme.typography.bodyMedium
+                )
 
-            Text(
-                text = "Sources: ${task?.sources?.size ?: 0}",
-                style = MaterialTheme.typography.headlineMedium
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Sources: ${task?.sources?.size ?: 0}",
+                    style = MaterialTheme.typography.headlineMedium
+                )
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                if (!task?.sources.isNullOrEmpty()) {
-                    items(task?.sources!!) { item ->
-                        SourceItem(
-                            source = item.source ?: ""
-                        )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    val sources = task?.sources?.reversed()
+
+                    if (!sources.isNullOrEmpty()) {
+                        items(sources) { item ->
+                            SourceItem(
+                                source = item.source ?: ""
+                            )
+                        }
                     }
                 }
             }
@@ -210,6 +235,7 @@ fun TaskDetailsScreen(
                 if (source.isNotEmpty()) {
                     taskDetailsViewModel.addSource(taskId, source)
                     showAddSourceDialog.value = false
+                    pullToRefreshState.startRefresh()
                 } else showToast(context, "Please add all the fields.")
             }
         }
