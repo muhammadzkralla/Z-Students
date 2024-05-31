@@ -19,9 +19,7 @@ class RequestRepositoryImpl(
         val userId = dataStore.getUserModel().id
 
         val apiResponse = zHttpClient.get<ApiResponse<List<Request>?>>(
-            "api/users/$userId/requests",
-            null,
-            headers
+            "api/users/$userId/requests", headers = headers
         )
 
         return apiResponse?.body

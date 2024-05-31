@@ -22,7 +22,7 @@ class UserRepositoryImpl(
         val userId = dataStore.getUserModel().id
 
         val apiResponse =
-            zHttpClient.get<ApiResponse<User?>>("api/users/$userId", null, headers)
+            zHttpClient.get<ApiResponse<User?>>("api/users/$userId", headers = headers)
 
         apiResponse?.body?.let { response ->
             if (response.success) dataStore.saveUserModel(response.data)
@@ -32,9 +32,7 @@ class UserRepositoryImpl(
     }
 
     override suspend fun updateUser(
-        firstName: String,
-        lastName: String,
-        dob: String
+        firstName: String, lastName: String, dob: String
     ): ApiResponse<User?>? {
         val token = dataStore.getToken()
         val headers = listOf(
@@ -44,13 +42,9 @@ class UserRepositoryImpl(
 
         val updateUserDto = UpdateUserDto(firstName, lastName, dob)
 
-        val apiResponse =
-            zHttpClient.put<ApiResponse<User?>>(
-                "api/users/update-user/$userId",
-                updateUserDto,
-                null,
-                headers
-            )
+        val apiResponse = zHttpClient.put<ApiResponse<User?>>(
+            "api/users/update-user/$userId", body = updateUserDto, headers = headers
+        )
 
         apiResponse?.body?.let { response ->
             if (response.success) dataStore.saveUserModel(response.data)
@@ -67,19 +61,13 @@ class UserRepositoryImpl(
         val userId = dataStore.getUserModel().id
 
         val imageMultipartBody = MultipartBody(
-            fileName = "file",
-            filePath = filePath,
-            contentType = "image/*"
+            fileName = "file", filePath = filePath, contentType = "image/*"
         )
         val parts = listOf(imageMultipartBody)
 
-        val apiResponse =
-            zHttpClient.multiPart<ApiResponse<MessageResponse?>>(
-                "api/users/${userId}/upload-image",
-                parts,
-                null,
-                headers
-            )
+        val apiResponse = zHttpClient.multiPart<ApiResponse<MessageResponse?>>(
+            "api/users/${userId}/upload-image", parts = parts, headers = headers
+        )
 
         return apiResponse?.body
     }

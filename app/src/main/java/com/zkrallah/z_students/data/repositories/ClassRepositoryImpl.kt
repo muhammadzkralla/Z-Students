@@ -25,8 +25,9 @@ class ClassRepositoryImpl(
         )
         val userId = dataStore.getUserModel().id
 
-        val apiResponse =
-            zHttpClient.get<ApiResponse<List<Class>?>>("api/users/$userId/classes", null, headers)
+        val apiResponse = zHttpClient.get<ApiResponse<List<Class>?>>(
+            "api/users/$userId/classes", headers = headers
+        )
 
         Log.d("UserClasses", "getUserClasses: $apiResponse")
 
@@ -39,8 +40,9 @@ class ClassRepositoryImpl(
             Header("Authorization", "Bearer $token")
         )
 
-        val apiResponse =
-            zHttpClient.get<ApiResponse<List<User>?>>("api/classes/$classId/users", null, headers)
+        val apiResponse = zHttpClient.get<ApiResponse<List<User>?>>(
+            "api/classes/$classId/users", headers = headers
+        )
 
         return apiResponse?.body
     }
@@ -51,12 +53,9 @@ class ClassRepositoryImpl(
             Header("Authorization", "Bearer $token")
         )
 
-        val apiResponse =
-            zHttpClient.get<ApiResponse<List<Announcement>?>>(
-                "api/classes/$classId/announcements",
-                null,
-                headers
-            )
+        val apiResponse = zHttpClient.get<ApiResponse<List<Announcement>?>>(
+            "api/classes/$classId/announcements", headers = headers
+        )
 
         return apiResponse?.body
     }
@@ -67,12 +66,9 @@ class ClassRepositoryImpl(
             Header("Authorization", "Bearer $token")
         )
 
-        val apiResponse =
-            zHttpClient.get<ApiResponse<List<Task>?>>(
-                "api/classes/$classId/tasks",
-                null,
-                headers
-            )
+        val apiResponse = zHttpClient.get<ApiResponse<List<Task>?>>(
+            "api/classes/$classId/tasks", headers = headers
+        )
 
         Log.d("TasksScreen", "getClassTasks: $apiResponse")
 
@@ -90,9 +86,7 @@ class ClassRepositoryImpl(
         )
 
         val apiResponse = zHttpClient.get<ApiResponse<List<Request>?>>(
-            "api/classes/$classId/requests",
-            null,
-            headers
+            "api/classes/$classId/requests", headers = headers
         )
 
         return apiResponse?.body
@@ -104,13 +98,9 @@ class ClassRepositoryImpl(
             Header("Authorization", "Bearer $token")
         )
 
-        val apiResponse =
-            zHttpClient.put<ApiResponse<Request?>>(
-                "api/admin/approve-request/$requestId",
-                Unit,
-                null,
-                headers
-            )
+        val apiResponse = zHttpClient.put<ApiResponse<Request?>>(
+            "api/admin/approve-request/$requestId", body = Unit, headers = headers
+        )
 
         return apiResponse?.body
     }
@@ -121,22 +111,15 @@ class ClassRepositoryImpl(
             Header("Authorization", "Bearer $token")
         )
 
-        val apiResponse =
-            zHttpClient.put<ApiResponse<Request?>>(
-                "api/admin/decline-request/$requestId",
-                Unit,
-                null,
-                headers
-            )
+        val apiResponse = zHttpClient.put<ApiResponse<Request?>>(
+            "api/admin/decline-request/$requestId", body = Unit, headers = headers
+        )
 
         return apiResponse?.body
     }
 
     override suspend fun addTask(
-        classId: Long,
-        title: String,
-        desc: String,
-        due: String
+        classId: Long, title: String, desc: String, due: String
     ): ApiResponse<Task?>? {
         val token = dataStore.getToken()
         val headers = listOf(
@@ -144,26 +127,18 @@ class ClassRepositoryImpl(
         )
 
         val taskDto = TaskDto(
-            title,
-            desc,
-            due
+            title, desc, due
         )
 
-        val apiResponse =
-            zHttpClient.post<ApiResponse<Task?>>(
-                "api/teachers/class/$classId/create-task",
-                taskDto,
-                null,
-                headers
-            )
+        val apiResponse = zHttpClient.post<ApiResponse<Task?>>(
+            "api/teachers/class/$classId/create-task", body = taskDto, headers = headers
+        )
 
         return apiResponse?.body
     }
 
     override suspend fun addAnnouncement(
-        classId: Long,
-        title: String,
-        content: String
+        classId: Long, title: String, content: String
     ): ApiResponse<Announcement?>? {
         val token = dataStore.getToken()
         val headers = listOf(
@@ -172,13 +147,9 @@ class ClassRepositoryImpl(
 
         val announcementDto = AnnouncementDto(title, content)
 
-        val apiResponse =
-            zHttpClient.post<ApiResponse<Announcement?>>(
-                "api/teachers/create-announcement/$classId",
-                announcementDto,
-                null,
-                headers
-            )
+        val apiResponse = zHttpClient.post<ApiResponse<Announcement?>>(
+            "api/teachers/create-announcement/$classId", body = announcementDto, headers = headers
+        )
 
         return apiResponse?.body
     }

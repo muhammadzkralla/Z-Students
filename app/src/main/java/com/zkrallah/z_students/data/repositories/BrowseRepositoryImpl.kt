@@ -20,7 +20,7 @@ class BrowseRepositoryImpl(
         )
 
         val apiResponse =
-            zHttpClient.get<ApiResponse<List<Class>?>>("api/classes", null, headers)
+            zHttpClient.get<ApiResponse<List<Class>?>>("api/classes", headers = headers)
 
         return apiResponse?.body
     }
@@ -32,13 +32,9 @@ class BrowseRepositoryImpl(
         )
         val userId = dataStore.getUserModel().id
 
-        val apiResponse =
-            zHttpClient.post<ApiResponse<Request?>>(
-                "api/users/request/$userId/to/$classId",
-                Unit,
-                null,
-                headers
-            )
+        val apiResponse = zHttpClient.post<ApiResponse<Request?>>(
+            "api/users/request/$userId/to/$classId", body = Unit, headers = headers
+        )
 
         return apiResponse?.body
     }
@@ -51,13 +47,9 @@ class BrowseRepositoryImpl(
 
         val classDto = ClassDto(name, description)
 
-        val apiResponse =
-            zHttpClient.post<ApiResponse<Class?>>(
-                "api/admin/create-class",
-                classDto,
-                null,
-                headers
-            )
+        val apiResponse = zHttpClient.post<ApiResponse<Class?>>(
+            "api/admin/create-class", body = classDto, headers = headers
+        )
 
         return apiResponse?.body
     }
