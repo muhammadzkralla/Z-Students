@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import com.zkrallah.z_students.domain.models.BottomNavItem
 
-const val BASE_URL = "http://192.168.1.6:8080"
+const val BASE_URL = "http://192.168.1.2:8080"
 
 val SCREENS = listOf(
     BottomNavItem(

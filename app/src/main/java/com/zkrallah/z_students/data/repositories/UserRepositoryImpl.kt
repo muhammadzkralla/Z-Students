@@ -6,9 +6,9 @@ import com.zkrallah.z_students.domain.models.User
 import com.zkrallah.z_students.domain.repositories.UserRepository
 import com.zkrallah.z_students.domain.response.ApiResponse
 import com.zkrallah.z_students.domain.response.MessageResponse
-import com.zkrallah.zhttp.Header
-import com.zkrallah.zhttp.MultipartBody
-import com.zkrallah.zhttp.ZHttpClient
+import com.zkrallah.zhttp.model.Header
+import com.zkrallah.zhttp.model.MultipartBody
+import com.zkrallah.zhttp.client.ZHttpClient
 
 class UserRepositoryImpl(
     private val zHttpClient: ZHttpClient,

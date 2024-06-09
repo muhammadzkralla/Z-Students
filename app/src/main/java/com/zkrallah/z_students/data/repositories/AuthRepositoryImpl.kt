@@ -11,7 +11,7 @@ import com.zkrallah.z_students.domain.models.User
 import com.zkrallah.z_students.domain.repositories.AuthRepository
 import com.zkrallah.z_students.domain.response.ApiResponse
 import com.zkrallah.z_students.domain.response.MessageResponse
-import com.zkrallah.zhttp.ZHttpClient
+import com.zkrallah.zhttp.client.ZHttpClient
 
 class AuthRepositoryImpl(
     private val zHttpClient: ZHttpClient,

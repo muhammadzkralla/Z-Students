@@ -8,8 +8,8 @@ import com.zkrallah.z_students.domain.models.Submission
 import com.zkrallah.z_students.domain.models.Task
 import com.zkrallah.z_students.domain.repositories.TaskRepository
 import com.zkrallah.z_students.domain.response.ApiResponse
-import com.zkrallah.zhttp.Header
-import com.zkrallah.zhttp.ZHttpClient
+import com.zkrallah.zhttp.model.Header
+import com.zkrallah.zhttp.client.ZHttpClient
 
 class TaskRepositoryImpl(
     private val zHttpClient: ZHttpClient,

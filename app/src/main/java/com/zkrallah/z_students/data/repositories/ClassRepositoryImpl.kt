@@ -11,8 +11,8 @@ import com.zkrallah.z_students.domain.models.Task
 import com.zkrallah.z_students.domain.models.User
 import com.zkrallah.z_students.domain.repositories.ClassRepository
 import com.zkrallah.z_students.domain.response.ApiResponse
-import com.zkrallah.zhttp.Header
-import com.zkrallah.zhttp.ZHttpClient
+import com.zkrallah.zhttp.model.Header
+import com.zkrallah.zhttp.client.ZHttpClient
 
 class ClassRepositoryImpl(
     private val zHttpClient: ZHttpClient,

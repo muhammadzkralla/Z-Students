@@ -4,7 +4,7 @@ import android.content.Context
 import com.zkrallah.z_students.BASE_URL
 import com.zkrallah.z_students.data.dataStore.DataStore
 import com.zkrallah.z_students.data.dataStore.DataStoreImpl
-import com.zkrallah.zhttp.ZHttpClient
+import com.zkrallah.zhttp.client.ZHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

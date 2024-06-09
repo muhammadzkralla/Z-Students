@@ -6,8 +6,8 @@ import com.zkrallah.z_students.domain.models.Class
 import com.zkrallah.z_students.domain.models.Request
 import com.zkrallah.z_students.domain.repositories.BrowseRepository
 import com.zkrallah.z_students.domain.response.ApiResponse
-import com.zkrallah.zhttp.Header
-import com.zkrallah.zhttp.ZHttpClient
+import com.zkrallah.zhttp.model.Header
+import com.zkrallah.zhttp.client.ZHttpClient
 
 class BrowseRepositoryImpl(
     private val zHttpClient: ZHttpClient,

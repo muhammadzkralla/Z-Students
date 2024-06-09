@@ -15,7 +15,7 @@ import com.zkrallah.z_students.domain.repositories.MainRepository
 import com.zkrallah.z_students.domain.repositories.RequestsRepository
 import com.zkrallah.z_students.domain.repositories.TaskRepository
 import com.zkrallah.z_students.domain.repositories.UserRepository
-import com.zkrallah.zhttp.ZHttpClient
+import com.zkrallah.zhttp.client.ZHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
