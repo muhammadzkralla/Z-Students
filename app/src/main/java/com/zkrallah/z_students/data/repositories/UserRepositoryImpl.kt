@@ -61,7 +61,7 @@ class UserRepositoryImpl(
         val userId = dataStore.getUserModel().id
 
         val imageMultipartBody = MultipartBody(
-            fileName = "file", filePath = filePath, contentType = "image/*"
+            name = "file", filePath = filePath, contentType = "image/*"
         )
         val parts = listOf(imageMultipartBody)
 
