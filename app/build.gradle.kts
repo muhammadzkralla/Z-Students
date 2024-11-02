@@ -82,7 +82,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     // ZHttp
-    implementation("com.github.muhammadzkralla:ZHttp:2.8.8")
+    implementation("com.github.muhammadzkralla:ZHttp:2.8.9")
     implementation("com.google.code.gson:gson:2.10.1")
 
     // Dagger Hilt
